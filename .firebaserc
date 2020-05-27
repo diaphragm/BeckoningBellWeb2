@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "beckoningbellweb"
+    "default": "beckoningbellweb-staging",
+    "staging": "beckoningbellweb-staging",
+    "production": "beckoningbellweb"
   }
 }
