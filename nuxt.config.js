@@ -42,6 +42,28 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: "AIzaSyCGVt3-mkrv-TNF-OSrccNWGXUUNsVHIp8",
+          authDomain: "beckoningbellweb-staging.firebaseapp.com",
+          databaseURL: "https://beckoningbellweb-staging.firebaseio.com",
+          projectId: "beckoningbellweb-staging",
+          storageBucket: "beckoningbellweb-staging.appspot.com",
+          messagingSenderId: "757753230186",
+          appId: "1:757753230186:web:e0333edaff2207cecc6b13",
+          measurementId: "G-S88G20F0TG"
+        },
+        onFirebaseHosting: true,
+        services: {
+          auth: true,
+          firestore: true,
+          functions: true,
+          analytics: true
+        }
+      }
+    ]
   ],
   /*
   ** vuetify module configuration
@@ -73,5 +95,20 @@ export default {
     */
     // extend (config, ctx) {
     // }
+    babel: {
+      presets({ isServer }) {
+        return [
+          [
+            // core-js@3
+            require.resolve('@nuxt/babel-preset-app'),
+            // require.resolve('@nuxt/babel-preset-app-edge'), // For nuxt-edge users
+            {
+              buildTarget: isServer ? 'server' : 'client',
+              corejs: { version: 3 }
+            }
+          ]
+        ]
+      }
+    }
   }
 }

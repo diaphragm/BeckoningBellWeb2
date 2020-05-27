@@ -75,6 +75,36 @@
           </v-btn>
         </v-card-actions>
       </v-card>
+      <v-card>
+        <v-card-title>
+          Bells
+        </v-card-title>
+        <v-card-text>
+          <div v-for="(bell, i) in bells" :key="i">
+            {{ bell.id }} <br>
+            {{ bell }}
+          </div>
+          <div v-for="(message, i) in messages" :key="i+1000">
+            {{ message }}
+          </div>
+        </v-card-text>
+        {{ bell }}
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="primary"
+            @click="addBell"
+          >
+            addBell
+          </v-btn>
+          <v-btn
+            color="primary"
+            @click="updateBell"
+          >
+            updateBell
+          </v-btn>
+        </v-card-actions>
+      </v-card>
     </v-flex>
   </v-layout>
 </template>
@@ -82,11 +112,52 @@
 <script>
 import Logo from '~/components/Logo.vue'
 import VuetifyLogo from '~/components/VuetifyLogo.vue'
+import Vue from 'vue'
+import { firestorePlugin } from 'vuefire'
+Vue.use(firestorePlugin)
 
 export default {
   components: {
     Logo,
     VuetifyLogo
+  },
+  data: function() {
+    return {
+      bells: [],
+      messages: [],
+      bell: {},
+    }
+  },
+  created: function() {
+    this.$bind('bells', this.$fireStore.collection('bells'))
+    this.$bind('messages', this.$fireStore.collection('bells').doc('pDzUSHX77FHbmOrs97ns').collection('messages'))
+    this.$bind('bell', this.$fireStore.collection('bells').doc('pDzUSHX77FHbmOrs97ns'))
+    console.log(this.messages)
+  },
+  methods: {
+    addBell: async function() {
+      const bell = await this.$fireStore.collection('bells').add({
+        place: '聖杯ダンジョン',
+        password: 'abcdefg',
+        note: '9kv8xiyi'
+      })
+      console.log(bell)
+    },
+    updateBell: async function() {
+      const bell = this.$fireStore.collection('bells').doc('pDzUSHX77FHbmOrs97ns')
+      await bell.set({
+        place: Math.random() * 1e16
+      })
+      console.log(bell.data)
+    }
+  },
+  watch: {
+    bell: {
+      handler:function(val) {
+        console.log(val)
+      },
+      deep: false
+    }
   }
 }
 </script>
