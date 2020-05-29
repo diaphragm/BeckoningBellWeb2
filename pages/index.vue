@@ -10,153 +10,113 @@
       md6
     >
       <div class="text-center">
-        <logo />
-        <vuetify-logo />
+        <h1>狩人呼びの鐘Web</h1>
+        <h2>The Old Hunters</h2>
       </div>
+
       <v-card>
         <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
+          鐘を鳴らす
         </v-card-title>
         <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-          >
-            Nuxt GitHub
-          </a>
+          <v-form ref="form" v-model="form.valid">
+            <group-select v-model="form.place" :items="placeList" :rules="[required]" label="場所"
+              hint="どこで鐘をならしていますか？"/>
+            <v-text-field v-model="form.password" label="合言葉" persistent-hint :rules="[required]"
+              hint="合言葉を設定しないと、レベル差がある他のプレイヤーとのマルチプレイができません。" />
+            <v-text-field v-model="form.note" label="備考" persistent-hint
+              hint="周回数、レベル、プレイ方針、契約カレル、聖杯ダンジョンの内容などを書くと親切かもしれません。" />
+          </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
+          <v-btn color="primary" @click="submit">
+            鐘を鳴らす
           </v-btn>
         </v-card-actions>
       </v-card>
       <v-card>
         <v-card-title>
-          Bells
+          現在募集中の鐘
         </v-card-title>
         <v-card-text>
-          <div v-for="(bell, i) in bells" :key="i">
-            {{ bell.id }} <br>
-            {{ bell }}
-          </div>
-          <div v-for="(message, i) in messages" :key="i+1000">
-            {{ message }}
-          </div>
+          <template v-if="bells.length">
+            <bells-table :bells="bells"/>
+          </template>
+          <template v-else>
+            募集中の鐘はありません。<a href="https://twitter.com/BloodborneVoyyy">Twitter</a>もご確認ください。
+          </template>
         </v-card-text>
-        {{ bell }}
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            @click="addBell"
-          >
-            addBell
-          </v-btn>
-          <v-btn
-            color="primary"
-            @click="updateBell"
-          >
-            updateBell
-          </v-btn>
-        </v-card-actions>
       </v-card>
     </v-flex>
+    <v-snackbar v-model="snackbar.open" :color="snackbar.color" :timeout="2000">
+      {{ snackbar.message }}
+    </v-snackbar>
   </v-layout>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
 import Vue from 'vue'
 import { firestorePlugin } from 'vuefire'
 Vue.use(firestorePlugin)
+import { PlaceList } from '~/plugins/BloodborneUtils.js'
+import { ringBell } from '~/plugins/FireStoreUtils.js'
+import GroupSelect from '~/components/GroupSelect.vue'
+import BellsTable from '~/components/BellsTable.vue'
 
 export default {
   components: {
-    Logo,
-    VuetifyLogo
+    GroupSelect,
+    BellsTable
   },
-  data: function() {
+  data() {
     return {
       bells: [],
       messages: [],
-      bell: {},
+      form: {},
+      placeList: PlaceList,
+      snackbar: {open: false, message: '', color: 'info'},
+      required: v =>  v ? true : '入力は必須です。',
     }
   },
-  created: function() {
-    this.$bind('bells', this.$fireStore.collection('bells'))
-    this.$bind('messages', this.$fireStore.collection('bells').doc('pDzUSHX77FHbmOrs97ns').collection('messages'))
-    this.$bind('bell', this.$fireStore.collection('bells').doc('pDzUSHX77FHbmOrs97ns'))
-    console.log(this.messages)
+  created() {
+    this.$bind('bells', this.$fireStore.collection('bells').orderBy('createdAt', 'desc'))
+    // this.$bind('messages', this.$fireStore.collection('bells').doc('pDzUSHX77FHbmOrs97ns').collection('messages'))
+    // this.$bind('bell', this.$fireStore.collection('bells').doc('pDzUSHX77FHbmOrs97ns'))
   },
   methods: {
-    addBell: async function() {
-      const bell = await this.$fireStore.collection('bells').add({
-        place: '聖杯ダンジョン',
-        password: 'abcdefg',
-        note: '9kv8xiyi'
-      })
-      console.log(bell)
+    submit() {
+      if (this.$refs.form.validate()) {
+        this.toast('鐘を鳴らしています…', 'info')
+        this.ringBell(this.form).then((res) => {
+          console.log(res, res.id)
+          this.toast('チャット画面に移動します。', 'success')
+        }).catch((res) => {
+          this.toast('エラーが発生しました。', 'error')
+        })
+      }
     },
-    updateBell: async function() {
-      const bell = this.$fireStore.collection('bells').doc('pDzUSHX77FHbmOrs97ns')
-      await bell.set({
-        place: Math.random() * 1e16
+    toast(message, color='info') {
+      this.snackbar.message = message
+      this.snackbar.color = color
+      this.snackbar.open = true
+    },
+    ringBell({ place, password, note }) {
+      return this.$fireStore.collection('bells').add({
+          place, password, note,
+          createdAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
+          updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp()
       })
-      console.log(bell.data)
+    },
+    reRingBell(id, { place, password, note }) {
+      return this.$fireStore.collection('bells').doc(id).update({
+        place, password, note,
+        updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp()
+      })
     }
   },
   watch: {
-    bell: {
-      handler:function(val) {
-        console.log(val)
-      },
-      deep: false
+    bells(val) {
+      console.log(val)
     }
   }
 }
