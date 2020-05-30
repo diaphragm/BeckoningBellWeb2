@@ -1,15 +1,16 @@
 <template>
-  <v-layout calss="fab-container">
-    <v-btn
-      v-scroll="onScroll"
-      v-show="fab"
-      fab
-      color="primary"
-      @click="toTop"
-    >
-      <v-icon>mdi-chevron-up</v-icon>
-    </v-btn>
-  </v-layout>
+  <v-btn
+    class="bottom-overwrite"
+    v-scroll="onScroll"
+    v-show="fab"
+    fab
+    fixed
+    right
+    color="primary"
+    @click="toTop"
+  >
+    <v-icon>mdi-chevron-up</v-icon>
+  </v-btn>
 </template>
 
 <script>
@@ -34,10 +35,8 @@ export default {
   }}
 </script>
 
-<style>
-  .fab-container {
-    position: fixed;
-    bottom: 0;
-    right: 0;
+<style scoped>
+  .bottom-overwrite {
+    bottom: 70px !important;
   }
 </style>

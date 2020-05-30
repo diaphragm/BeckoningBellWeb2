@@ -1,9 +1,9 @@
 <template>
-  <v-app>
+  <v-app id="app">
     <app-bar :bell="bell"/>
 
     <v-content>
-      <v-container>
+      <v-container class="main-container">
         <v-row justify="start">
           <v-col>
             <div class="caption">場所</div>
@@ -27,7 +27,7 @@
           <v-col cols=12>
             <template v-for="message in messages">
               <v-row :key="message.id" :justify="own(message) ? 'end' : 'start'">
-                <v-col cols=9>
+                <v-col xl=8 lg=8 md=9 sm=10 cols=11 class="pa-1">
                   <message :message="message"/>
                 </v-col>
               </v-row>
@@ -37,13 +37,14 @@
       </v-container>
     </v-content>
 
-    <bottom-navigation />
+    <bottom-navigation @click="sendMessage"/>
 
     <v-snackbar v-model="snackbar.open" :color="snackbar.color" :timeout="2000">
       {{ snackbar.message }}
     </v-snackbar>
 
     <ScrollButton />
+
   </v-app>
 </template>
 
@@ -51,7 +52,7 @@
 import Vue from 'vue'
 import { firestorePlugin } from 'vuefire'
 Vue.use(firestorePlugin)
-import { BeckonerName, generateHunterName } from '~/plugins/BloodborneUtils.js'
+import { BeckonerName, generateHunterNam, BeckonerCaryll, CaryllRuneList } from '~/plugins/BloodborneUtils.js'
 import TimeAgo from '~/components/TimeAgo.vue'
 import Message from '~/components/Message.vue'
 import AppBar from '~/components/AppBar.vue'
@@ -71,7 +72,8 @@ export default {
       user: {},
       form: {},
       snackbar: {open: false, message: '', color: 'info'},
-      _hunter_name: null
+      _hunter_name: null,
+      _caryll: null
     }
   },
   computed: {
@@ -84,12 +86,27 @@ export default {
         return this._hunter_name
       }
       if (this.hunters[this.user.uid]) {
-        this._hunter_name = this.hunters[this.user.uid]
+        this._hunter_name = this.hunters[this.user.uid].name
         return this._hunter_name
       }
       this._hunter_name = generateHunterName(Object.values(this.hunters))
       return this._hunter_name
     },
+    // hunterCaryll() {
+    //   if (this._caryll) {
+    //     return this._caryll
+    //   }
+    //   if (this.bell.beckoner === this.user.uid) {
+    //     this._caryll = BeckonerCaryll
+    //     return this._caryll
+    //   }
+    //   if (this.hunters[this.user.uid]) {
+    //     this._caryll = this.hunters[this.user.uid].caryll
+    //     return this._caryll
+    //   }
+    //   this._caryll = generateHunterName(Object.values(this.hunters))
+    //   return this._caryll
+    // },
     hunters() {
       const dic = {}
       this.messages.forEach((message) => {
@@ -138,11 +155,14 @@ export default {
     sendMessage(message) {
       const hunter = {
         id: this.user.uid,
-        name: this.hunterName
+        name: this.hunterName,
+        // caryll: this.hunterCaryll
       }
+      console.log(hunter)
       return this.bellObj.collection('messages').add({
         hunter: hunter,
-        body: message,
+        body: message.body,
+        type: message.type,
         createdAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
       })
     },
@@ -170,3 +190,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .main-container {
+    max-width: 800px;
+  }
+</style>

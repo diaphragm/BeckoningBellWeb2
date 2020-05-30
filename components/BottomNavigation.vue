@@ -10,7 +10,7 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item v-for="message in messages" @click="dev(message)" :key="message">
+          <v-list-item v-for="message in messages" @click="click(message, 'text')" :key="message">
             <v-list-item-title>{{ message }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -25,11 +25,11 @@
             <v-icon>{{ icon(group) }}</v-icon>
           </v-btn>
         </template>
-        <v-card>
+        <v-card class="stamp-list">
           <v-container>
             <v-row>
-              <v-col v-for="(stamp, i) in stamps">
-                <v-btn height="80" width="80">
+              <v-col v-for="(stamp, i) in stamps" :key="i+messageList.length" class="text-center pa-1">
+                <v-btn height="80" width="80" @click="click(stamp, 'stamp')">
                   <img :src="`stamps/${stamp}`" height="80" width="80"/>
                 </v-btn>
               </v-col>
@@ -67,8 +67,8 @@ export default {
         'スタンプ': 'mdi-shape',
       }[group]
     },
-    dev(arg) {
-      console.log(arg)
+    click(body, type) {
+      this.$emit('click', {type, body})
     }
   }
 }
@@ -77,5 +77,13 @@ export default {
 <style scoped>
   #bottom-navigation {
     overflow-x: auto;
+  }
+  .v-list {
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+  .stamp-list {
+    max-height: 95vh;
+    overflow-y: auto;
   }
 </style>

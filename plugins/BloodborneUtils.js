@@ -311,7 +311,9 @@ export const StampList = {
   ]
 }
 
-export const CryllRuneList = [
+export const BeckonerCaryll = "hunter.svg"
+
+export const CaryllRuneList = [
   "anti-clockwise-metamorphosis.svg",
   "beast.svg",
   "beasts-embrace.svg",
