@@ -59,7 +59,6 @@ import Vue from 'vue'
 import { firestorePlugin } from 'vuefire'
 Vue.use(firestorePlugin)
 import { PlaceList } from '~/plugins/BloodborneUtils.js'
-import { ringBell } from '~/plugins/FireStoreUtils.js'
 import GroupSelect from '~/components/GroupSelect.vue'
 import BellsTable from '~/components/BellsTable.vue'
 
@@ -70,8 +69,8 @@ export default {
   },
   data() {
     return {
+      user: {},
       bells: [],
-      messages: [],
       form: {},
       placeList: PlaceList,
       snackbar: {open: false, message: '', color: 'info'},
@@ -82,6 +81,14 @@ export default {
     this.$bind('bells', this.$fireStore.collection('bells').orderBy('createdAt', 'desc'))
     // this.$bind('messages', this.$fireStore.collection('bells').doc('pDzUSHX77FHbmOrs97ns').collection('messages'))
     // this.$bind('bell', this.$fireStore.collection('bells').doc('pDzUSHX77FHbmOrs97ns'))
+
+    this.$fireAuth.onAuthStateChanged((user) => {
+      this.user = user
+      console.log(user)
+    })
+    this.$fireAuth.signInAnonymously().catch((e) => {
+      console.log(e.code, e.message)
+    })
   },
   methods: {
     submit() {
@@ -103,8 +110,9 @@ export default {
     ringBell({ place, password, note }) {
       return this.$fireStore.collection('bells').add({
           place, password, note,
+          beckoner: this.user.uid,
           createdAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
-          updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp()
+          updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
       })
     },
     reRingBell(id, { place, password, note }) {

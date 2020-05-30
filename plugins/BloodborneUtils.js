@@ -5,61 +5,61 @@ export const PlaceList = {
     "大橋",
     "オドンの地下墓",
     "「聖職者の獣」霧前",
-    "「ガスコイン神父」霧前"
+    "「ガスコイン神父」霧前",
   ],
   "聖堂街/捨てられた古工房": [
     "ヤーナム聖堂街",
     "大聖堂",
     "捨てられた古工房",
-    "「教区長エミーリア」霧前"
+    "「教区長エミーリア」霧前",
   ],
   "旧市街": [
     "ヤーナム旧市街",
     "聖杯教会",
     "黒獣の墓地",
     "「血に渇いた獣」霧前",
-    "「黒獣パール」霧前"
+    "「黒獣パール」霧前",
   ],
   "ヘムウィックの墓地街": [
     "ヘムウィックの墓地街",
     "魔女の館",
-    "「ヘムウィックの魔女」霧前"
+    "「ヘムウィックの魔女」霧前",
   ],
   "禁域の森": [
     "禁域の森",
     "禁域の墓",
-    "「ヤーナムの影」霧前"
+    "「ヤーナムの影」霧前",
   ],
   "悪夢の辺境/教室棟": [
     "教室棟",
     "悪夢の辺境",
     "アメンドーズの寝所",
-    "「アメンドーズ」霧前"
+    "「アメンドーズ」霧前",
   ],
   "ビルゲンワース": [
     "ビルゲンワース",
     "月前の湖",
-    "「白痴の蜘蛛、ロマ」霧前"
+    "「白痴の蜘蛛、ロマ」霧前",
   ],
   "隠し街ヤハグル": [
     "地下牢",
     "隠し街ヤハグル",
     "ヤハグル教会",
     "再誕の広場",
-    "「再誕者」霧前"
+    "「再誕者」霧前",
   ],
   "廃城カインハースト": [
     "廃城カインハースト",
     "ローゲリウスの座",
     "血の女王の間",
-    "「殉教者ローゲリウス」霧前"
+    "「殉教者ローゲリウス」霧前",
   ],
   "聖堂街 上層/嘆きの祭壇": [
     "聖堂街 上層",
     "星輪草の庭",
     "嘆きの祭壇",
     "「星界からの使者」霧前",
-    "「星の娘、エーブリエタース」霧前"
+    "「星の娘、エーブリエタース」霧前",
   ],
   "メンシスの悪夢/教室棟": [
     "教室棟2F",
@@ -68,11 +68,11 @@ export const PlaceList = {
     "メルゴーの高楼中腹",
     "乳母の月見台",
     "「悪夢の主、ミコラーシュ」霧前",
-    "「メルゴーの乳母」霧前"
+    "「メルゴーの乳母」霧前",
   ],
   "狩人の夢": [
     "「最初の狩人、ゲールマン」霧前",
-    "「月の魔物」霧前"
+    "「月の魔物」霧前",
   ],
   "狩人の悪夢": [
     "狩人の悪夢",
@@ -80,29 +80,29 @@ export const PlaceList = {
     "地下死体溜り",
     "悪夢の大聖堂",
     "「醜い獣、ルドウイーク」霧前",
-    "「初代教区長ローレンス」霧前"
+    "「初代教区長ローレンス」霧前",
   ],
   "実験棟": [
     "実験棟",
     "星輪樹の庭",
     "時計塔",
     "「失敗作たち」霧前",
-    "「時計塔のマリア」霧前"
+    "「時計塔のマリア」霧前",
   ],
   "漁村": [
     "漁村",
     "灯台脇の小屋",
     "海岸",
-    "「ゴースの遺子」霧前"
+    "「ゴースの遺子」霧前",
   ],
   "聖杯ダンジョン": [
     "聖杯(固定ダンジョン)",
-    "汎聖杯"
+    "汎聖杯",
   ]
 }
 
 
-export const FirstName = [
+export const FirstNameList = [
   "烏羽",
   "赤ローブ",
   "血族狩り",
@@ -156,10 +156,10 @@ export const FirstName = [
   "星の瞳",
   "撃鉄",
   "葦名",
-  "エアプ"
+  "エアプ",
 ]
 
-export const LastName = [
+export const LastNameList = [
   "狩人",
   "古狩人",
   "男",
@@ -206,11 +206,10 @@ export const LastName = [
   "貞子",
   "変態",
   "栗本",
-  "地底人"
+  "地底人",
 ]
 
-export const HostName = "狩りの主"
-
+export const BeckonerName = "狩りの主"
 
 export const MessageList = {
   "返答/挨拶": [
@@ -225,7 +224,7 @@ export const MessageList = {
     "さようなら",
     "落ちます",
     "少し離席します",
-    "倒せました"
+    "倒せました",
   ],
   "ホスト向け": [
     "待ちます",
@@ -237,7 +236,7 @@ export const MessageList = {
     "案内してください",
     "先行しないでください",
     "鐘女は倒さないでください",
-    "あまりチャットできません"
+    "あまりチャットできません",
   ],
   "合流": [
     "鐘の音を探しています",
@@ -250,7 +249,7 @@ export const MessageList = {
     "ボス前にいます",
     "先程の場所にいます",
     "移動しています",
-    "補給に戻ります"
+    "補給に戻ります",
   ],
   "戦略": [
     "敵を倒します",
@@ -265,7 +264,7 @@ export const MessageList = {
     "突撃しましょう",
     "走り抜けましょう",
     "油壷投げます",
-    "聖歌の鐘を使います"
+    "聖歌の鐘を使います",
   ],
   "ヒント/その他": [
     "ショートカットがあります",
@@ -278,7 +277,7 @@ export const MessageList = {
     "がんばれ！",
     "君は正しく、そして幸運だ",
     "宇宙は空にある",
-    "さすがにおかしいなと(笑)"
+    "さすがにおかしいなと(笑)",
   ]
 }
 
@@ -308,6 +307,42 @@ export const StampList = {
     "animal_pig_buta.png",
     "bug_seakagokegumo.png",
     "character_cthulhu_yog_sothoth.png",
-    "character_cthulhu_shoggoth.png"
+    "character_cthulhu_shoggoth.png",
   ]
+}
+
+export const CryllRuneList = [
+  "anti-clockwise-metamorphosis.svg",
+  "beast.svg",
+  "beasts-embrace.svg",
+  "blood-rapture.svg",
+  "clawmark.svg",
+  "clockwise-metamorphosis.svg",
+  "communion.svg",
+  "corruption.svg",
+  "deep-sea.svg",
+  "eye.svg",
+  "formless-oedon.svg",
+  "guidance.svg",
+  "heir.svg",
+  "hunter.svg",
+  "impurity.svg",
+  "lake.svg",
+  "milkweed.svg",
+  "moon.svg",
+  "oedon-writhe.svg",
+  "radiance.svg"
+]
+
+export const generateHunterName = (excludes = []) => {
+  const limit = 1000
+  let i = 0
+  let name = ''
+  do {
+    const firstName = FirstNameList[Math.floor(Math.random() * FirstNameList.length)]
+    const lastName = LastNameList[Math.floor(Math.random() * LastNameList.length)]
+    name = `${firstName}の${lastName}`
+  } while (excludes.includes(name) && i < limit)
+
+  return name
 }

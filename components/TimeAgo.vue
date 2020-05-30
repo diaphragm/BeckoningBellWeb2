@@ -12,7 +12,7 @@ export default {
   },
   created() {
     this.calcTimeAgo()
-    setInterval(this.calcTimeAgo, 5*1000)
+    setInterval(this.calcTimeAgo, 100)
   },
   methods: {
     calcTimeAgo() {
