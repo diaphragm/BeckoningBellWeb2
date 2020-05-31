@@ -1,8 +1,9 @@
 <template>
-  <v-bottom-navigation fixed app grow id="bottom-navigation">
+  <v-bottom-navigation fixed app grow id="bottom-navigation"
+    class="justify-start justify-md-center justify-lg-center justify-xl-center">
 
-    <template v-for="(messages, group, i) in messageList">
-      <v-menu top :offset-y="true" :key="i">
+    <template v-for="(messages, group) in messageList">
+      <v-menu top :offset-y="true" :key="group">
         <template v-slot:activator="{ on }">
           <v-btn v-on="on">
             <span>{{ group }}</span>
@@ -17,8 +18,8 @@
       </v-menu>
     </template>
 
-    <template v-for="(stamps, group, i) in stampList">
-      <v-menu top :offset-y="true" :key="i">
+    <template v-for="(stamps, group) in stampList">
+      <v-menu top :offset-y="true" :key="group">
         <template v-slot:activator="{ on }">
           <v-btn v-on="on">
             <span>{{ group }}</span>
@@ -28,7 +29,7 @@
         <v-card class="stamp-list">
           <v-container>
             <v-row>
-              <v-col v-for="(stamp, i) in stamps" :key="i+messageList.length" class="text-center pa-1">
+              <v-col v-for="(stamp) in stamps" :key="stamp" class="text-center pa-1">
                 <v-btn height="80" width="80" @click="click(stamp, 'stamp')">
                   <img :src="`stamps/${stamp}`" height="80" width="80"/>
                 </v-btn>
@@ -68,6 +69,7 @@ export default {
       }[group]
     },
     click(body, type) {
+      console.log(this.$vuetify.breakpoint.name)
       this.$emit('click', {type, body})
     }
   }
@@ -79,11 +81,13 @@ export default {
     overflow-x: auto;
   }
   .v-list {
-    max-height: 95vh;
+    max-height: 90vh;
+    max-width: 90vw;
     overflow-y: auto;
   }
   .stamp-list {
-    max-height: 95vh;
+    max-height: 90vh;
+    max-width: 90vw;
     overflow-y: auto;
   }
 </style>

@@ -4,7 +4,8 @@
       <v-card>
         <v-row align="center">
           <v-col xl=3 lg=3 md=3 sm=4 cols=5 justify="center" >
-            <v-img src="caryll/hunter.svg" height="32" contain/>
+            <v-img :src="`caryll/${message.hunter.caryll}`" height="32" contain/>
+
             <v-card-subtitle class="pa-1 ma-1 text-center">
               {{ message.hunter.name }}
             </v-card-subtitle>
@@ -42,6 +43,13 @@ export default {
     return {
     }
   },
+  methods: {
+    generateColorCode(id) {
+      const buffer = (new TextEncoder).encode(id)
+      const hue = buffer[0] * buffer[1]
+      return `hsl(${hue}, 100%, 34%)`
+    }
+  }
 }
 </script>
 

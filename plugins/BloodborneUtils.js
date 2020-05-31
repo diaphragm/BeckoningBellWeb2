@@ -335,16 +335,3 @@ export const CaryllRuneList = [
   "oedon-writhe.svg",
   "radiance.svg"
 ]
-
-export const generateHunterName = (excludes = []) => {
-  const limit = 1000
-  let i = 0
-  let name = ''
-  do {
-    const firstName = FirstNameList[Math.floor(Math.random() * FirstNameList.length)]
-    const lastName = LastNameList[Math.floor(Math.random() * LastNameList.length)]
-    name = `${firstName}の${lastName}`
-  } while (excludes.includes(name) && i < limit)
-
-  return name
-}

@@ -1,21 +1,19 @@
 <template>
-  <v-layout
-    column
-    justify-center
-    align-center
-  >
-    <v-flex
-      xs12
-      sm8
-      md6
-    >
+    <v-container>
       <div class="text-center">
         <h1>狩人呼びの鐘Web</h1>
         <h2>The Old Hunters</h2>
       </div>
 
-      <v-card>
-        <v-card-title class="headline">
+      <v-card class="ma-2">
+        <v-card-text>
+          <p>Bloodborneの協力プレイ募集サイトです。</p>
+          <p>Twitterでの募集機能、定型文やスタンプが使えるチャット機能があります。</p>
+        </v-card-text>
+
+        <v-divider/>
+
+        <v-card-title>
           鐘を鳴らす
         </v-card-title>
         <v-card-text>
@@ -24,17 +22,18 @@
               hint="どこで鐘をならしていますか？"/>
             <v-text-field v-model="form.password" label="合言葉" persistent-hint :rules="[required]"
               hint="合言葉を設定しないと、レベル差がある他のプレイヤーとのマルチプレイができません。" />
-            <v-text-field v-model="form.note" label="備考" persistent-hint
+            <v-textarea v-model="form.note" label="備考" persistent-hint
               hint="周回数、レベル、プレイ方針、契約カレル、聖杯ダンジョンの内容などを書くと親切かもしれません。" />
           </v-form>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="d-flex justify-centerb ">
           <v-btn color="primary" @click="submit">
             鐘を鳴らす
           </v-btn>
         </v-card-actions>
-      </v-card>
-      <v-card>
+
+        <v-divider />
+
         <v-card-title>
           現在募集中の鐘
         </v-card-title>
@@ -47,11 +46,11 @@
           </template>
         </v-card-text>
       </v-card>
-    </v-flex>
-    <v-snackbar v-model="snackbar.open" :color="snackbar.color" :timeout="2000">
-      {{ snackbar.message }}
-    </v-snackbar>
-  </v-layout>
+
+      <v-snackbar v-model="snackbar.open" :color="snackbar.color" :timeout="2000">
+        {{ snackbar.message }}
+      </v-snackbar>
+    </v-container>
 </template>
 
 <script>
@@ -94,9 +93,12 @@ export default {
     submit() {
       if (this.$refs.form.validate()) {
         this.toast('鐘を鳴らしています…', 'info')
+        const data = this.form
+        data.note = data.note || null
         this.ringBell(this.form).then((res) => {
           console.log(res, res.id)
           this.toast('チャット画面に移動します。', 'success')
+          this.$router.push({path: `/${res.id}`})
         }).catch((res) => {
           this.toast('エラーが発生しました。', 'error')
         })

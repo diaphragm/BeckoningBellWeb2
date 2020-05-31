@@ -13,7 +13,7 @@
         <tr v-for="bell in bells" :key="bell.id">
           <td>{{ bell.place }}</td>
           <td>{{ bell.note }}</td>
-          <td><a :href="url(bell)">共鳴する</a></td>
+          <td><nuxt-link :to="url(bell)">共鳴する</nuxt-link></td>
           <td><time-ago :time="bell.createdAt"/></td>
         </tr>
       </tbody>

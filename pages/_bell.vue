@@ -1,28 +1,10 @@
 <template>
   <v-app id="app">
-    <app-bar :bell="bell"/>
 
     <v-content>
+      <app-bar :bell="bell" :user="user" />
+
       <v-container class="main-container">
-        <v-row justify="start">
-          <v-col>
-            <div class="caption">場所</div>
-            <div class="body-1">{{ bell.place }}</div>
-          </v-col>
-          <v-col>
-            <div class="caption">合言葉</div>
-            <div class="body-1">{{ bell.password }}</div>
-          </v-col>
-        </v-row>
-        <v-row  justify="center">
-          <v-col>
-            <div class="caption">備考</div>
-            <div class="body-2">{{ bell.note }}</div>
-          </v-col>
-        </v-row>
-
-        <v-divider />
-
         <v-row justify="center">
           <v-col cols=12>
             <template v-for="message in messages">
@@ -52,7 +34,7 @@
 import Vue from 'vue'
 import { firestorePlugin } from 'vuefire'
 Vue.use(firestorePlugin)
-import { BeckonerName, generateHunterNam, BeckonerCaryll, CaryllRuneList } from '~/plugins/BloodborneUtils.js'
+import { BeckonerName, BeckonerCaryll, CaryllRuneList, FirstNameList, LastNameList} from '~/plugins/BloodborneUtils.js'
 import TimeAgo from '~/components/TimeAgo.vue'
 import Message from '~/components/Message.vue'
 import AppBar from '~/components/AppBar.vue'
@@ -61,9 +43,11 @@ import ScrollButton from '~/components/ScrollButton.vue'
 
 export default {
   layout: 'bell',
+
   components: {
     TimeAgo, Message, AppBar, BottomNavigation, ScrollButton
   },
+
   data() {
     return {
       bellObj: null,
@@ -72,49 +56,36 @@ export default {
       user: {},
       form: {},
       snackbar: {open: false, message: '', color: 'info'},
-      _hunter_name: null,
-      _caryll: null
+      _hunter: null,
     }
   },
+
   computed: {
-    hunterName() {
-      if (this._hunter_name) {
-        return this._hunter_name
+    hunter() {
+      if (this._hunter) {
+        return this._hunter
       }
       if (this.bell.beckoner === this.user.uid) {
-        this._hunter_name = BeckonerName
-        return this._hunter_name
+        this._hunter = {name: BeckonerName, caryll: BeckonerCaryll}
+        return this._hunter
       }
-      if (this.hunters[this.user.uid]) {
-        this._hunter_name = this.hunters[this.user.uid].name
-        return this._hunter_name
+      if (this.existsHunters[this.user.uid]) {
+        this._hunter = this.existsHunters[this.user.uid]
+        return this._hunter
       }
-      this._hunter_name = generateHunterName(Object.values(this.hunters))
-      return this._hunter_name
+      this._hunter = this.generateHunterName()
+      return this._hunter
     },
-    // hunterCaryll() {
-    //   if (this._caryll) {
-    //     return this._caryll
-    //   }
-    //   if (this.bell.beckoner === this.user.uid) {
-    //     this._caryll = BeckonerCaryll
-    //     return this._caryll
-    //   }
-    //   if (this.hunters[this.user.uid]) {
-    //     this._caryll = this.hunters[this.user.uid].caryll
-    //     return this._caryll
-    //   }
-    //   this._caryll = generateHunterName(Object.values(this.hunters))
-    //   return this._caryll
-    // },
-    hunters() {
-      const dic = {}
+
+    existsHunters() {
+      const ret = {}
       this.messages.forEach((message) => {
-        dic[message.hunter.id] = message.hunter.name
+        ret[message.hunter.id] = message.hunter
       })
-      return dic
-    }
+      return ret
+    },
   },
+
   created() {
     const bell = this.$fireStore.collection('bells').doc(this.$route.params.bell)
     this.bellObj = bell
@@ -130,35 +101,39 @@ export default {
     this.$bind('messages', bell.collection('messages').orderBy('createdAt', 'desc'))
 
     this.$fireAuth.onAuthStateChanged((user) => {
-      this.user = user
-      console.log(user)
+      this.user = user || {}
+      console.log('authchange', user)
     })
     this.$fireAuth.signInAnonymously().catch((e) => {
       console.log(e.code, e.message)
     })
   },
+
   methods: {
     toast(message, color='info') {
       this.snackbar.message = message
       this.snackbar.color = color
       this.snackbar.open = true
     },
+
     own(message) {
       return message.hunter.id === this.user.uid
     },
+
     reRingBell(id, { place, password, note }) {
       return this.$fireStore.collection('bells').doc(id).update({
         place, password, note,
         updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp()
       })
     },
+
     sendMessage(message) {
       const hunter = {
         id: this.user.uid,
-        name: this.hunterName,
-        // caryll: this.hunterCaryll
+        name: this.hunter.name,
+        caryll: this.hunter.caryll
       }
-      console.log(hunter)
+      console.log(hunter, this.hunter)
       return this.bellObj.collection('messages').add({
         hunter: hunter,
         body: message.body,
@@ -166,8 +141,8 @@ export default {
         createdAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
       })
     },
+
     send() {
-      console.log(this.hunterName)
       this.toast('メッセージを送信しています…', 'info')
       this.sendMessage(this.form.text).then((res) => {
         console.log(res, res.id)
@@ -176,10 +151,35 @@ export default {
         this.toast('エラーが発生しました。', 'error')
       })
     },
+
+    generateHunterData() {
+      let name = ''
+      const limit = 1000
+      const excludes = (Object.values(this.existsHunters))
+      let i = 0
+      do {
+        const firstName = FirstNameList[Math.floor(Math.random() * FirstNameList.length)]
+        const lastName = LastNameList[Math.floor(Math.random() * LastNameList.length)]
+        name = `${firstName}の${lastName}`
+      } while (excludes.includes(name) && i < limit)
+
+      let caryll = ''
+      const exists = Object.values(this.existCarylls)
+      const availables =  CaryllRuneList.filter(caryll => !exists.includes(caryll))
+      if ( availables.length > 0 ) {
+        caryll = availables[Math.floor(Math.random() * availables.length)]
+      } else {
+        caryll = CaryllRuneList[Math.floor(Math.random() * CaryllRuneList.length)]
+      }
+
+      return {name, caryll}
+    },
+
     dev() {
-      console.log(generateHunterName())
+      console.log('dev')
     }
   },
+
   watch: {
     bell(val) {
       console.log(val)
@@ -187,12 +187,6 @@ export default {
     user(val) {
       console.log(val)
     }
-  }
+  },
 }
 </script>
-
-<style scoped>
-  .main-container {
-    max-width: 800px;
-  }
-</style>
