@@ -11,7 +11,7 @@
           <p>Twitterでの募集機能、定型文やスタンプが使えるチャット機能があります。</p>
         </v-card-text>
 
-        <v-divider/>
+        <ornament-separator />
 
         <v-card-title>
           鐘を鳴らす
@@ -19,27 +19,31 @@
         <v-card-text>
           <v-form ref="form" v-model="form.valid">
             <group-select v-model="form.place" :items="placeList" :rules="[required]" label="場所"
-              hint="どこで鐘をならしていますか？"/>
+              hint="どこで鐘をならしていますか？" />
             <v-text-field v-model="form.password" label="合言葉" persistent-hint :rules="[required]"
               hint="合言葉を設定しないと、レベル差がある他のプレイヤーとのマルチプレイができません。" />
             <v-textarea v-model="form.note" label="備考" persistent-hint
               hint="周回数、レベル、プレイ方針、契約カレル、聖杯ダンジョンの内容などを書くと親切かもしれません。" />
+            <v-radio-group v-model="form.region" label="マッチング地域" :row="$vuetify.breakpoint.smAndUp" mandatory>
+              <v-radio label="ローカル" value="ローカル" />
+              <v-radio label="ワールドワイド" value="ワールドワイド" />
+            </v-radio-group>
           </v-form>
         </v-card-text>
-        <v-card-actions class="d-flex justify-centerb ">
+        <v-card-actions class="d-flex justify-center">
           <v-btn color="primary" @click="submit">
             鐘を鳴らす
           </v-btn>
         </v-card-actions>
 
-        <v-divider />
+        <ornament-separator />
 
         <v-card-title>
           現在募集中の鐘
         </v-card-title>
         <v-card-text>
           <template v-if="bells.length">
-            <bells-table :bells="bells"/>
+            <bells-table :bells="bells" />
           </template>
           <template v-else>
             募集中の鐘はありません。<a href="https://twitter.com/BloodborneVoyyy">Twitter</a>もご確認ください。
@@ -60,11 +64,13 @@ Vue.use(firestorePlugin)
 import { PlaceList } from '~/plugins/BloodborneUtils.js'
 import GroupSelect from '~/components/GroupSelect.vue'
 import BellsTable from '~/components/BellsTable.vue'
+import OrnamentSeparator from '~/components/OrnamentSeparator.vue'
 
 export default {
   components: {
     GroupSelect,
-    BellsTable
+    BellsTable,
+    OrnamentSeparator
   },
   data() {
     return {
@@ -109,9 +115,9 @@ export default {
       this.snackbar.color = color
       this.snackbar.open = true
     },
-    ringBell({ place, password, note }) {
+    ringBell({ place, password, note, region }) {
       return this.$fireStore.collection('bells').add({
-          place, password, note,
+          place, password, note, region,
           beckoner: this.user.uid,
           createdAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
           updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp(),

@@ -23,9 +23,12 @@
 
     <template v-if="showMenu">
       <v-card-text>{{ bell.place }}で鳴らしています。</v-card-text>
-      <v-divider/>
-      <v-card-text>合言葉：{{ bell.password }}</v-card-text>
-      <v-divider/>
+      <v-divider />
+      <v-card-text>
+        <span class="mr-2">合言葉：{{ bell.password }}</span>
+        <span>({{ bell.region }})</span>
+      </v-card-text>
+      <v-divider />
       <v-card-text>{{ bell.note }}</v-card-text>
     </template>
   </v-card>

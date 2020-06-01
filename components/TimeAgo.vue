@@ -10,9 +10,16 @@ export default {
       timeAgo: ''
     }
   },
+  computed: {
+    milliseconds() {
+      const seconds = this.time.seconds
+      const nanoseconds = this.time.nanoseconds
+      return Math.floor(seconds * 1000 + nanoseconds / 1000000)
+    }
+  },
   created() {
     this.calcTimeAgo()
-    setInterval(this.calcTimeAgo, 100)
+    setInterval(this.calcTimeAgo, 1000)
   },
   methods: {
     calcTimeAgo() {
@@ -22,7 +29,7 @@ export default {
       }
 
       let now = new Date()
-      let date = new Date(this.time.toMillis())
+      let date = new Date(this.milliseconds)
       let diff = new Date(Math.max(now.getTime() - date.getTime(), 0))
 
       if (diff.getUTCFullYear() - 1970) {

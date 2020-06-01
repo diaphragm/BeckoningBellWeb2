@@ -14,7 +14,7 @@
           <td>{{ bell.place }}</td>
           <td>{{ bell.note }}</td>
           <td><nuxt-link :to="url(bell)">共鳴する</nuxt-link></td>
-          <td><time-ago :time="bell.createdAt"/></td>
+          <td><time-ago :time="bell.createdAt" /></td>
         </tr>
       </tbody>
     </template>

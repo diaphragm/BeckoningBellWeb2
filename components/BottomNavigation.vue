@@ -31,7 +31,7 @@
             <v-row>
               <v-col v-for="(stamp) in stamps" :key="stamp" class="text-center pa-1">
                 <v-btn height="80" width="80" @click="click(stamp, 'stamp')">
-                  <img :src="`stamps/${stamp}`" height="80" width="80"/>
+                  <img :src="`stamps/${stamp}`" height="80" width="80" />
                 </v-btn>
               </v-col>
             </v-row>
@@ -54,7 +54,7 @@ export default {
   data() {
     return {
       messageList: MessageList,
-      stampList: StampList
+      stampList: StampList,
     }
   },
   methods: {
@@ -70,6 +70,7 @@ export default {
     },
     click(body, type) {
       console.log(this.$vuetify.breakpoint.name)
+      this.selected = 30
       this.$emit('click', {type, body})
     }
   }

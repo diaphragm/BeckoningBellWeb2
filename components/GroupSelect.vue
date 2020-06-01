@@ -1,10 +1,10 @@
 <template>
   <v-select v-bind:value="value" v-on:input="$emit('input', $event)" :items="transformed" :rules="rules" :label="label" :hint="hint" persistent-hint>
     <template v-slot:selection="data">
-      <v-list-item-content v-text="data.item.value"/>
+      <v-list-item-content v-text="data.item.value" />
     </template>
     <template v-slot:item="data">
-      <v-list-item-content v-text="data.item.value"/>
+      <v-list-item-content v-text="data.item.value" />
     </template>
   </v-select>
 </template>
