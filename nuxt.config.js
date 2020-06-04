@@ -31,6 +31,9 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '~/plugins/vuefire.js',
+    '~/plugins/vuetify-toast-snackbar.js',
+    '~/plugins/firestore-bbw-utils.js'
   ],
   /*
   ** Nuxt.js dev-modules

@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { MessageList, StampList } from '~/plugins/BloodborneUtils.js'
+import { MessageList, StampList } from '~/assets/BloodborneUtils.js'
 import TimeAgo from '~/components/TimeAgo.vue'
 
 export default {

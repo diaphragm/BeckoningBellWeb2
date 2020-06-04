@@ -16,12 +16,13 @@ export default {
     transformed() {
       const ret = []
       Object.entries(this.items).forEach(([group, places]) => {
-        ret.push({divider: true})
         ret.push({header: group})
         places.forEach((place) => {
           ret.push({value: place, group: group})
         })
+        ret.push({divider: true})
       })
+      ret.pop()
       return ret
     }
   },

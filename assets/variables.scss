@@ -2,3 +2,24 @@
 //
 // The variables you want to modify
 // $font-size-root: 20px;
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap');
+
+// https://github.com/vuetifyjs/vuetify/issues/8169
+$body-font-family: 'Noto Serif JP', 'Yu Mincho', 'YuMincho', 'Hiragino Mincho ProN', serif;
+.v-application {
+  .display-1,
+  .display-2,
+  .display-3,
+  .display-4,
+  .headline,
+  .title,
+  .subtitle-1,
+  .subtitle-2,
+  .body-1,
+  .body-2,
+  .caption,
+  .overline {
+    font-family: $body-font-family !important;
+  }
+}

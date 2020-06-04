@@ -14,28 +14,38 @@
     </v-content>
 
     <bottom-navigation @click="sendMessage" />
-
-    <v-snackbar v-model="snackbar.open" :color="snackbar.color" :timeout="2000">
-      {{ snackbar.message }}
-    </v-snackbar>
-
     <ScrollButton />
+
+    <v-dialog v-model="silenced" persistent max-width="290">
+      <v-card>
+        <v-card-title class="justify-center">募集は終了しました</v-card-title>
+        <v-card-text class="text-center">
+          我ら血によって人となり<br>
+          人を超え<br>
+          また人を失う<br>
+          知らぬ者よ<br>
+          かねて血を恐れたまえ
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+            <v-btn nuxt to='/' text>TOPへ戻る</v-btn>
+          <v-spacer />
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
   </v-app>
 </template>
 
 <script>
-import Vue from 'vue'
-import { firestorePlugin } from 'vuefire'
-Vue.use(firestorePlugin)
-import { BeckonerName, BeckonerCaryll, CaryllRuneList, FirstNameList, LastNameList} from '~/plugins/BloodborneUtils.js'
+import { BeckonerName, BeckonerCaryll, CaryllRuneList, FirstNameList, LastNameList} from '~/assets/BloodborneUtils.js'
 import MessageList from '~/components/MessageList.vue'
 import AppBar from '~/components/AppBar.vue'
 import BottomNavigation from '~/components/BottomNavigation.vue'
 import ScrollButton from '~/components/ScrollButton.vue'
 
 export default {
-  layout: 'bell',
+  layout: 'Bell',
 
   components: {
     MessageList, AppBar, BottomNavigation, ScrollButton
@@ -49,7 +59,7 @@ export default {
       remoteMessages: [],
       user: {},
       form: {},
-      snackbar: {open: false, message: '', color: 'info'},
+      silenced: false,
       _userName: null,
       _userCaryll: null,
     }
@@ -141,33 +151,15 @@ export default {
   },
 
   methods: {
-    toast(message, color='info') {
-      this.snackbar.message = message
-      this.snackbar.color = color
-      this.snackbar.open = true
-    },
-
-    reRingBell(id, { place, password, note }) {
-      return this.$fireStore.collection('bells').doc(id).update({
-        place, password, note,
-        updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp()
-      })
-    },
-
     sendMessage(message) {
       const hunter = {
         id: this.user.uid,
         name: this.userName,
         caryll: this.userCaryll
       }
-      this.bellObj.collection('messages').add({
-        hunter: hunter,
-        body: message.body,
-        type: message.type,
-        createdAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
+      this.$sendMessage(this.bell.id, hunter, message).then(() => {
+        this.$vuetify.goTo(0)
       })
-
-      this.$vuetify.goTo(0)
     },
 
     sendLocalSystemMessage(body) {
@@ -185,15 +177,6 @@ export default {
       })
     },
 
-    send() {
-      this.toast('メッセージを送信しています…', 'info')
-      this.sendMessage(this.form.text).then((res) => {
-        console.log(res, res.id)
-        this.toast('メッセージを送信しました。', 'success')
-      }).catch((res) => {
-        this.toast('エラーが発生しました。', 'error')
-      })
-    },
 
     generateHunterName() {
       let name = ''
@@ -238,6 +221,9 @@ export default {
           募集は一定時間で自動的に終了しますが、他の協力者のためにも協力プレイを終える際には手動で募集を終了するようご協力をお願いします。
         `)
       }
+    },
+    'bell.silencedAt': function(val) {
+      this.silenced = !!val
     }
   },
 }

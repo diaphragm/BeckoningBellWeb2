@@ -33,20 +33,20 @@ export default {
       let diff = new Date(Math.max(now.getTime() - date.getTime(), 0))
 
       if (diff.getUTCFullYear() - 1970) {
-        this.timeAgo = diff.getUTCFullYear() - 1970 + 'y'
+        this.timeAgo = diff.getUTCFullYear() - 1970 + '年'
       } else if (diff.getUTCMonth()) {
-        this.timeAgo = diff.getUTCMonth() + 'mom'
+        this.timeAgo = diff.getUTCMonth() + '月'
       } else if (diff.getUTCDate() - 1) {
-        this.timeAgo = diff.getUTCDate() - 1 + 'd'
+        this.timeAgo = diff.getUTCDate() - 1 + '日'
       } else if (diff.getUTCHours()) {
-        this.timeAgo = diff.getUTCHours() + 'h'
+        this.timeAgo = diff.getUTCHours() + '時間'
       } else if (diff.getUTCMinutes()) {
-        this.timeAgo = diff.getUTCMinutes() + 'm'
+        this.timeAgo = diff.getUTCMinutes() + '分'
       } else {
         if (diff.getUTCSeconds() >= 20) {
-          this.timeAgo = Math.floor(diff.getUTCSeconds() / 10)*10 + 's'
+          this.timeAgo = Math.floor(diff.getUTCSeconds() / 10)*10 + '秒'
         } else {
-          this.timeAgo = 'now'
+          this.timeAgo = 'たった今'
         }
       }
     }

@@ -11,24 +11,14 @@
           <p>Twitterでの募集機能、定型文やスタンプが使えるチャット機能があります。</p>
         </v-card-text>
 
-        <ornament-separator />
+        <!-- <ornament-separator /> -->
+        <v-divider />
 
         <v-card-title>
           鐘を鳴らす
         </v-card-title>
         <v-card-text>
-          <v-form ref="form" v-model="form.valid">
-            <group-select v-model="form.place" :items="placeList" :rules="[required]" label="場所"
-              hint="どこで鐘をならしていますか？" />
-            <v-text-field v-model="form.password" label="合言葉" persistent-hint :rules="[required]"
-              hint="合言葉を設定しないと、レベル差がある他のプレイヤーとのマルチプレイができません。" />
-            <v-textarea v-model="form.note" label="備考" persistent-hint
-              hint="周回数、レベル、プレイ方針、契約カレル、聖杯ダンジョンの内容などを書くと親切かもしれません。" />
-            <v-radio-group v-model="form.region" label="マッチング地域" :row="$vuetify.breakpoint.smAndUp" mandatory>
-              <v-radio label="ローカル" value="ローカル" />
-              <v-radio label="ワールドワイド" value="ワールドワイド" />
-            </v-radio-group>
-          </v-form>
+          <bell-form ref="bellForm" :form="form" />
         </v-card-text>
         <v-card-actions class="d-flex justify-center">
           <v-btn color="primary" @click="submit">
@@ -36,57 +26,47 @@
           </v-btn>
         </v-card-actions>
 
-        <ornament-separator />
+        <!-- <ornament-separator /> -->
+        <v-divider />
 
         <v-card-title>
           現在募集中の鐘
         </v-card-title>
         <v-card-text>
           <template v-if="bells.length">
-            <bells-table :bells="bells" />
+            <bells-table :bells="bells" :user="user" />
           </template>
           <template v-else>
             募集中の鐘はありません。<a href="https://twitter.com/BloodborneVoyyy">Twitter</a>もご確認ください。
           </template>
         </v-card-text>
       </v-card>
-
-      <v-snackbar v-model="snackbar.open" :color="snackbar.color" :timeout="2000">
-        {{ snackbar.message }}
-      </v-snackbar>
     </v-container>
 </template>
 
 <script>
-import Vue from 'vue'
-import { firestorePlugin } from 'vuefire'
-Vue.use(firestorePlugin)
-import { PlaceList } from '~/plugins/BloodborneUtils.js'
-import GroupSelect from '~/components/GroupSelect.vue'
 import BellsTable from '~/components/BellsTable.vue'
 import OrnamentSeparator from '~/components/OrnamentSeparator.vue'
+import BellForm from '~/components/BellForm.vue'
+import Snackbar from '~/components/Snackbar.vue'
 
 export default {
   components: {
-    GroupSelect,
     BellsTable,
-    OrnamentSeparator
+    OrnamentSeparator,
+    BellForm,
+    Snackbar
   },
   data() {
     return {
       user: {},
       bells: [],
       form: {},
-      placeList: PlaceList,
       snackbar: {open: false, message: '', color: 'info'},
-      required: v =>  v ? true : '入力は必須です。',
     }
   },
   created() {
-    this.$bind('bells', this.$fireStore.collection('bells').orderBy('createdAt', 'desc'))
-    // this.$bind('messages', this.$fireStore.collection('bells').doc('pDzUSHX77FHbmOrs97ns').collection('messages'))
-    // this.$bind('bell', this.$fireStore.collection('bells').doc('pDzUSHX77FHbmOrs97ns'))
-
+    this.$bind('bells', this.$fireStore.collection('bells').where('silencedAt', '==', null).orderBy('createdAt', 'desc'))
     this.$fireAuth.onAuthStateChanged((user) => {
       this.user = user
       console.log(user)
@@ -97,38 +77,27 @@ export default {
   },
   methods: {
     submit() {
-      if (this.$refs.form.validate()) {
-        this.toast('鐘を鳴らしています…', 'info')
+      if (this.$refs.bellForm.validate()) {
+        this.$toast.info('鐘を鳴らしています…')
         const data = this.form
         data.note = data.note || null
-        this.ringBell(this.form).then((res) => {
+        this.$ringBell(data).then((res) => {
           console.log(res, res.id)
-          this.toast('チャット画面に移動します。', 'success')
+          this.$toast.success('チャット画面に移動します。')
           this.$router.push({path: `/${res.id}`})
         }).catch((res) => {
-          this.toast('エラーが発生しました。', 'error')
+          this.$toast.error('エラーが発生しました。')
         })
       }
     },
-    toast(message, color='info') {
-      this.snackbar.message = message
-      this.snackbar.color = color
-      this.snackbar.open = true
-    },
-    ringBell({ place, password, note, region }) {
-      return this.$fireStore.collection('bells').add({
-          place, password, note, region,
-          beckoner: this.user.uid,
-          createdAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
-          updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
-      })
-    },
-    reRingBell(id, { place, password, note }) {
-      return this.$fireStore.collection('bells').doc(id).update({
-        place, password, note,
-        updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp()
-      })
-    }
+    // ringBell({ place, password, note, region }) {
+    //   return this.$fireStore.collection('bells').add({
+    //       place, password, note, region,
+    //       beckoner: this.user.uid,
+    //       createdAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
+    //       updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
+    //   })
+    // },
   },
   watch: {
     bells(val) {

@@ -10,9 +10,7 @@
           <v-toolbar-title>狩人呼びの鐘Web</v-toolbar-title>
           <v-spacer />
 
-        <v-btn icon>
-          <v-icon>mdi-tune</v-icon>
-        </v-btn>
+        <re-ring-bell-form :bell="bell" />
         </template>
         <v-btn icon @click="showMenu = !showMenu">
           <v-icon>
@@ -35,9 +33,12 @@
 </template>
 
 <script>
+import ReRingBellForm from '~/components/ReRingBellForm.vue'
+
 export default {
   props: ['bell', 'user'],
   components: {
+    ReRingBellForm
   },
   data() {
     return {
@@ -47,7 +48,7 @@ export default {
   methods: {
     home() {
       this.$router.push({path: '/'})
-    }
+    },
   }
 }
 </script>
