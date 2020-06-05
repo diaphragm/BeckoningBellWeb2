@@ -39,12 +39,15 @@ export default {
     url(bell) {
       return `/${bell.id}`
     },
+
     stop(bellId) {
-      if (confirm('募集を終了しますか？')) {
+      this.$confirm('募集を終了しますか？').then(res => {
+        if (!res) { return }
+
         this.$silenceBell(bellId).then(() => {
           this.$toast.info('募集を終了しました。')
         })
-      }
+      })
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-text class="ma-1">
-      {{ message.body }}
+      <span v-html="$sanitize(message.body)"></span>
     </v-card-text>
   </v-card>
 </template>

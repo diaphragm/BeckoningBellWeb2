@@ -10,7 +10,7 @@
       </v-col>
       <v-col xl=9 lg=9 md=9 sm=8 cols=7 justify="start">
         <v-card-text v-if="message.type == 'text'" class="pa-1 ma-1">
-          {{ message.body }}
+          <span v-html="$sanitize(message.body)"></span>
         </v-card-text>
         <v-img v-if="message.type == 'stamp'" class="pa-1 ma-1"
           :src="`stamps/${message.body}`"

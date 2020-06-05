@@ -33,7 +33,9 @@ export default {
   plugins: [
     '~/plugins/vuefire.js',
     '~/plugins/vuetify-toast-snackbar.js',
-    '~/plugins/firestore-bbw-utils.js'
+    '~/plugins/vuetify-confirm.js',
+    '~/plugins/sanitize-html.js',
+    '~/plugins/firestore-bbw-utils.js',
   ],
   /*
   ** Nuxt.js dev-modules

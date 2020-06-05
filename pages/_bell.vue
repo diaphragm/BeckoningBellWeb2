@@ -19,7 +19,7 @@
     <v-dialog v-model="silenced" persistent max-width="290">
       <v-card>
         <v-card-title class="justify-center">募集は終了しました</v-card-title>
-        <v-card-text class="text-center">
+        <v-card-text class="text-center font-italic">
           我ら血によって人となり<br>
           人を超え<br>
           また人を失う<br>
@@ -145,7 +145,7 @@ export default {
 
   mounted() {
     this.sendLocalSystemMessage(`
-      狩人呼びの鐘Webへようこそ。下部にあるボタンから、定型文やスタンプを送信できます。
+      狩人呼びの鐘Webへようこそ。下部にあるボタンから、定型文やスタンプを送信できます。<br>
       ホスト(狩りの主)以外のユーザー名は、自動でランダムに選ばれます。
     `)
   },
@@ -213,11 +213,11 @@ export default {
   watch: {
     isBeckoner(val, old) {
       if (val && !old) {
+        const icon = '<i class="v-icon notranslate mdi mdi-bell-plus"></i>'
         this.sendLocalSystemMessage(`
-          右上のボタンから募集を終了したり、鐘の情報を更新することができます。
-          鐘の情報を更新することで、Twitterで再募集することができます。
-        `)
-        this.sendLocalSystemMessage(`
+          右上の${icon}から募集を終了したり、鐘の情報を更新することができます。<br>
+          鐘の情報を更新することで、Twitterで再募集することができます。<br>
+          <br>
           募集は一定時間で自動的に終了しますが、他の協力者のためにも協力プレイを終える際には手動で募集を終了するようご協力をお願いします。
         `)
       }
