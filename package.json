@@ -5,13 +5,13 @@
   "author": "diaphragm",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
-    "build": "nuxt build",
-    "start": "nuxt start",
+    "dev": "NODE_ENV=staging nuxt",
+    "build": "NODE_ENV=staging nuxt build",
+    "start": "NODE_ENV=staging nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "fbuild": "cd functions; npm run build; cd ..",
-    "deploy": "nuxt build; firebase deploy"
+    "deploy": "NODE_ENV=staging nuxt build; firebase use staging; firebase deploy",
+    "functions:build": "cd functions; npm run build; cd .."
   },
   "dependencies": {
     "@nuxtjs/firebase": "^5.2.0",
