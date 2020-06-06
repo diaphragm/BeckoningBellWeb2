@@ -1,0 +1,47 @@
+## TODO
+
+- [ ] 見た目のブラッシュアップ
+  - [ ] 鐘一覧
+  - [ ] メッセージ
+  - [ ] 色
+  - [ ] divider
+  - [ ] ツイッター埋め込み
+  - [ ] スタンプリスト
+  - [ ] 全体的な幅とか
+  - [ ] 合言葉の導線を考える
+  - [ ] ヘッダーがやっぱりいまいち
+    - 折りたたみはしたい
+    - 鐘の情報とかはまとめたい
+- [ ] 更新の連打制限
+  - twitterへの投稿だけ制限する
+- [ ] SEO対策
+- [ ] Tweet機能
+  - [x] 新しい鐘
+  - [ ] 更新時
+  - [ ] 終了時
+- [ ] WebPush
+  - [ ] 新しい鐘が鳴ったら(index)
+  - [ ] 特定の鐘でメッセージ飛んできたら(bell/:id)
+- [ ] OGP
+  - [ ] imageは募集場所をばばーんと
+  - [ ] titleは募集場所
+  - [ ] descriptionに備考
+  - [ ] 募集終了したらimageとdescriptionを終了に差し替え
+    - [ ] 反映時間を調査
+- [ ] 環境ごとの設定をまとめる
+- [ ] CI/CD
+
+## 設定
+
+### Twitter Token
+```
+firebase functions:config:set twitter.consumer_secret=XXXXX
+firebase functions:config:set twitter.consumer_key=XXXXX
+firebase functions:config:set twitter.access_token_key=XXXXX
+firebase functions:config:set twitter.access_token_secret=XXXXX
+```
+
+### etc.
+```
+firebase functions:config:set app.base_url=https://enviroment/
+```
