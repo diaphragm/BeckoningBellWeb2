@@ -91,3 +91,6 @@ sw.*
 
 # firebase functions emulator config
 .runtimeconfig.json
+
+# firebase cache
+.firebase

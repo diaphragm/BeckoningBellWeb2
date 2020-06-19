@@ -59,6 +59,7 @@ export default {
         services: {
           auth: true,
           firestore: true,
+          messaging: true,
           analytics: true
         }
       }
@@ -112,5 +113,8 @@ export default {
         ]
       }
     }
+  },
+  manifest: {
+    gcm_sender_id: '103953800507'
   }
 }
