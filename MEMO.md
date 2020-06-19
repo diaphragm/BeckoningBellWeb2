@@ -17,7 +17,7 @@
 - [x] 更新の連打制限
   - twitterへの投稿だけ制限する
   - 頻繁に更新してもtwitterには反映されません的な注意書きいれる
-  - [ ] コードベタ書きにしちゃったので設定にする
+  - [x] コードベタ書きにしちゃったので設定にする
 - [x] 古い鐘のメンテ
 - [ ] SEO対策
 - [x] Tweet機能
@@ -42,6 +42,8 @@
   - [ ] ホストが指定した狩人は非表示
   - [ ] アク禁機能
     - [ ] DB直接弄ったりしてお手軽に実装したい
+- [ ] VueもTypeScript化
+
 
 ## 設定
 
@@ -53,7 +55,7 @@ firebase functions:config:set twitter.access_token_key=XXXXX
 firebase functions:config:set twitter.access_token_secret=XXXXX
 ```
 
-### etc.
+### env
 ```
-firebase functions:config:set app.base_url=https://enviroment/
+firebase functions:config:set app.env=(staging|production)
 ```

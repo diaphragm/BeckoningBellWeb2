@@ -1,8 +1,10 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import * as Twitter from 'twitter'
+import { config } from './env.config.js'
 
 admin.initializeApp()
+
 
 // interface
 
@@ -13,13 +15,15 @@ interface Bell {
 
 // const
 
-const REGION = 'asia-northeast1'
-const RETWEET_INTERVAL = 1 * 60 // seconds
-const EXPIRE_TIME = 60 * 60 // seconds
+const ENV: string = functions.config().app.env
+const ENV_CONFIG: {[key: string]: any} = config[ENV]
+
+const REGION = ENV_CONFIG['region']
+const RETWEET_INTERVAL: number = ENV_CONFIG['retweetInterval']
+const EXPIRE_TIME: number = ENV_CONFIG['bellBexpirationTime']
 const BELL_ATTR_LIST = ['place', 'password', 'note', 'region', 'silencedAt']
 
 const TwitterClient = new Twitter(functions.config().twitter)
-
 
 
 // util function
@@ -42,7 +46,7 @@ const bellDiff = (newBell: FirebaseFirestore.DocumentData, oldBell: FirebaseFire
   }
 }
 
-const maintenanceBells = async () => {
+const maintenanceBells = async (): Promise<void> => {
   const now = admin.firestore.Timestamp.fromDate(new Date)
 
   const targets = await admin.firestore().collection('bells').where('silencedAt', '==', null).get()
@@ -51,7 +55,6 @@ const maintenanceBells = async () => {
 
     const messages = await doc.ref.collection('messages').orderBy('createdAt', 'desc').limit(1).get()
     const lastMessage = messages.docs[0]
-
     if (lastMessage) {
       time = lastMessage.data().createdAt
     } else {
@@ -59,7 +62,7 @@ const maintenanceBells = async () => {
     }
 
     if (now.seconds - time.seconds > EXPIRE_TIME) {
-      doc.ref.update({
+      await doc.ref.update({
         silencedAt: admin.firestore.FieldValue.serverTimestamp()
       })
     }
@@ -73,31 +76,32 @@ export const onCreatedBellTritter = functions
   .region(REGION)
   .firestore
   .document('bells/{bellId}')
-  .onCreate((snap, context) => {
+  .onCreate(async (snap, context) => {
     const id = snap.id
     const {place, note} = snap.data() || {}
     const url = `${functions.config().app.base_url}${id}`
     const message = `${place}で鐘を鳴らしています ${url}\n${note}`
 
-    TwitterClient.post('statuses/update', {
-      status: message,
-    }).then(tweet => {
+    try {
+      const tweet = await TwitterClient.post('statuses/update', {
+        status: message,
+      })
       const tweetUrl = genTweetUrl(tweet)
+
       return admin.firestore().collection('bells').doc(snap.id).update({
         tweetUrl: tweetUrl
       })
-    }).catch(error => {
+    } catch (error) {
       console.error(error)
-    })
-
-    return 0
+      return 1
+    }
   })
 
 export const onUpdatedBellTrigger = functions
   .region(REGION)
   .firestore
   .document('bells/{bellId}')
-  .onUpdate((change, context) => {
+  .onUpdate(async (change, context) => {
     const newData = change.after.data()
     const oldData = change.before.data()
 
@@ -115,12 +119,15 @@ export const onUpdatedBellTrigger = functions
         const status = `${message} ${tweetUrl}`
         const tweetId = tweetUrl.match(/\d+$/)[0]
 
-        TwitterClient.post('statuses/update', {
-          status: status,
-          in_reply_to_status_id: tweetId
-        }).catch(error => {
+        try {
+          await TwitterClient.post('statuses/update', {
+            status: status,
+            in_reply_to_status_id: tweetId
+          })
+        } catch (error){
           console.error(error)
-        })
+          return 1
+        }
       }
     }
 
@@ -131,8 +138,8 @@ export const scheduledFunction = functions
   .region(REGION)
   .pubsub
   .schedule('every 10 minutes')
-  .onRun((context) => {
-    maintenanceBells()
+  .onRun(async (context) => {
+    await maintenanceBells()
 
     return 0
   })
@@ -150,8 +157,8 @@ export const printenv = functions
 
 export const maintenance = functions
   .region(REGION)
-  .https.onRequest((req, res) => {
-    maintenanceBells()
+  .https.onRequest(async (req, res) => {
+    await maintenanceBells()
     console.log('maintenance')
     res.send('maintenance')
   })
