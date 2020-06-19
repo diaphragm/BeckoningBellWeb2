@@ -7,7 +7,8 @@
     "predeploy": [
       "npm --prefix \"$RESOURCE_DIR\" run lint",
       "npm --prefix \"$RESOURCE_DIR\" run build"
-    ]
+    ],
+    "source": "functions"
   },
   "hosting": {
     "public": "dist",
@@ -25,20 +26,24 @@
   },
   "emulators": {
     "functions": {
-      "host": "192.168.1.182",
+      "host": "192.168.50.181",
       "port": 5001
     },
     "firestore": {
-      "host": "192.168.1.182",
+      "host": "192.168.50.181",
       "port": 8080
     },
     "hosting": {
-      "host": "192.168.1.182",
+      "host": "192.168.50.181",
       "port": 5000
     },
     "ui": {
-      "host": "192.168.1.182",
+      "host": "192.168.50.181",
       "enabled": true
+    },
+    "pubsub": {
+      "host": "192.168.50.181",
+      "port": 8085
     }
   }
 }

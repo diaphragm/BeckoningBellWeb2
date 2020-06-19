@@ -4,55 +4,25 @@ import * as Twitter from 'twitter'
 
 admin.initializeApp()
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
-
-
-// export const onCreateBellTrigger = functions
-//   .region(REGION)
-//   .firestore
-//   .document('bells/{bellId}')
-//   .onCreate((snap, context) => {
-//     admin.firestore().collection('bells').doc(snap.id).update({
-//       createdAt: admin.firestore.FieldValue.serverTimestamp()
-//     }).then((status) => {
-//       console.log(status)
-//       return 0
-//     }).catch((status) => {
-//       console.log(status)
-//       return 1
-//     })
-//   })
-
-// export const onUpdateBellTrigger = functions
-//   .region(REGION)
-//   .firestore
-//   .document('bells/{bellId}')
-//   .onUpdate((change, context) => {
-//     admin.firestore().collection('bells').doc(change.after.id).update({
-//       updatedAt: admin.firestore.FieldValue.serverTimestamp()
-//     }).then((status) => {
-//       console.log(status)
-//       return 0
-//     }).catch((status) => {
-//       console.log(status)
-//       return 1
-//     })
-// })
+// interface
 
 interface Bell {
   [key: string]: string | FirebaseFirestore.Timestamp,
 }
 
+
+// const
+
 const REGION = 'asia-northeast1'
 const RETWEET_INTERVAL = 1 * 60 // seconds
+const EXPIRE_TIME = 60 * 60 // seconds
 const BELL_ATTR_LIST = ['place', 'password', 'note', 'region', 'silencedAt']
 
 const TwitterClient = new Twitter(functions.config().twitter)
+
+
+
+// util function
 
 const genTweetUrl = (tweet: Twitter.ResponseData): string => {
   return `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
@@ -71,6 +41,33 @@ const bellDiff = (newBell: FirebaseFirestore.DocumentData, oldBell: FirebaseFire
     return null
   }
 }
+
+const maintenanceBells = async () => {
+  const now = admin.firestore.Timestamp.fromDate(new Date)
+
+  const targets = await admin.firestore().collection('bells').where('silencedAt', '==', null).get()
+  targets.docs.forEach(async (doc) => {
+    let time: FirebaseFirestore.Timestamp
+
+    const messages = await doc.ref.collection('messages').orderBy('createdAt', 'desc').limit(1).get()
+    const lastMessage = messages.docs[0]
+
+    if (lastMessage) {
+      time = lastMessage.data().createdAt
+    } else {
+      time = doc.data().createdAt
+    }
+
+    if (now.seconds - time.seconds > EXPIRE_TIME) {
+      doc.ref.update({
+        silencedAt: admin.firestore.FieldValue.serverTimestamp()
+      })
+    }
+  })
+}
+
+
+// trigger
 
 export const onCreatedBellTritter = functions
   .region(REGION)
@@ -130,10 +127,31 @@ export const onUpdatedBellTrigger = functions
     return 0
   })
 
+export const scheduledFunction = functions
+  .region(REGION)
+  .pubsub
+  .schedule('every 10 minutes')
+  .onRun((context) => {
+    maintenanceBells()
+
+    return 0
+  })
+
+
 // debug
-export const printenv = functions.region(REGION)
+
+export const printenv = functions
+  .region(REGION)
   .https.onRequest((req, res) => {
     console.log('functions.config()', functions.config())
     console.log('process.env', process.env)
     res.send("Please check firebase dashboard.")
+  })
+
+export const maintenance = functions
+  .region(REGION)
+  .https.onRequest((req, res) => {
+    maintenanceBells()
+    console.log('maintenance')
+    res.send('maintenance')
   })
