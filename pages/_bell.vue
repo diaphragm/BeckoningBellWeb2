@@ -1,17 +1,14 @@
 <template>
-  <v-app id="app">
+  <v-content>
+    <app-bar :bell="bell" />
 
-    <v-content>
-      <app-bar :bell="bell" :user="user" />
-
-      <v-container class="main-container">
-        <v-row justify="center">
-          <v-col>
-            <message-list :messages="messages" :user="user" />
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-content>
+    <v-container class="main-container">
+      <v-row justify="center">
+        <v-col>
+          <message-list :messages="messages" />
+        </v-col>
+      </v-row>
+    </v-container>
 
     <bottom-navigation @click="sendMessage" />
     <ScrollButton />
@@ -33,8 +30,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-  </v-app>
+  </v-content>
 </template>
 
 <script>
@@ -45,8 +41,6 @@ import BottomNavigation from '~/components/BottomNavigation.vue'
 import ScrollButton from '~/components/ScrollButton.vue'
 
 export default {
-  layout: 'Bell',
-
   components: {
     MessageList, AppBar, BottomNavigation, ScrollButton
   },
@@ -57,7 +51,6 @@ export default {
       bell: {},
       localMessages: [],
       remoteMessages: [],
-      user: {},
       form: {},
       silenced: false,
       _userName: null,
@@ -76,7 +69,7 @@ export default {
     },
 
     isBeckoner() {
-      return this.bell.beckoner && this.user.uid && (this.bell.beckoner === this.user.uid)
+      return this.bell.beckoner && this.$uid && (this.bell.beckoner === this.$uid)
     },
 
     // hunter.name, hunter.caryllにオブジェクトにするとcomputedが効かなくなるので値ごとにする
@@ -88,8 +81,8 @@ export default {
         this._userName = BeckonerName
         return this._userName
       }
-      if (this.existsHunters[this.user.uid]) {
-        this._userName = this.existsHunters[this.user.uid].name
+      if (this.existsHunters[this.$uid]) {
+        this._userName = this.existsHunters[this.$uid].name
         return this._userName
       }
       this._userName = this.generateHunterName()
@@ -104,8 +97,8 @@ export default {
         this._userCaryll = BeckonerCaryll
         return this._userCaryll
       }
-      if (this.existsHunters[this.user.uid]) {
-        this._userCaryll = this.existsHunters[this.user.uid].caryll
+      if (this.existsHunters[this.$uid]) {
+        this._userCaryll = this.existsHunters[this.$uid].caryll
         return this._userCaryll
       }
       this._userCaryll = this.generateHunterCaryll()
@@ -134,13 +127,6 @@ export default {
     })
     this.$bind('bell', bell)
     this.$bind('remoteMessages', bell.collection('messages').orderBy('createdAt', 'desc'))
-
-    this.$fireAuth.onAuthStateChanged((user) => {
-      this.user = user || {}
-    })
-    this.$fireAuth.signInAnonymously().catch((e) => {
-      console.log(e.code, e.message)
-    })
   },
 
   mounted() {
@@ -153,7 +139,7 @@ export default {
   methods: {
     sendMessage(message) {
       const hunter = {
-        id: this.user.uid,
+        id: this.$uid,
         name: this.userName,
         caryll: this.userCaryll
       }

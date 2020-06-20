@@ -17,7 +17,7 @@
           <td><time-ago :time="bell.createdAt" />前</td>
           <td><v-btn text nuxt :to="url(bell)">共鳴する</v-btn></td>
           <td>
-            <v-btn text v-if="bell.beckoner === user.uid" @click="stop(bell.id)">
+            <v-btn text v-if="bell.beckoner === $uid" @click="stop(bell.id)">
              空砲を鳴らす
             </v-btn>
           </td>
@@ -31,7 +31,7 @@
 import TimeAgo from '~/components/TimeAgo.vue'
 
 export default {
-  props: ['bells', 'user'],
+  props: ['bells'],
   components: {
     TimeAgo
   },

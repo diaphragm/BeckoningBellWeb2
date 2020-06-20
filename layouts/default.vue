@@ -1,12 +1,11 @@
 <template>
   <v-app id="app">
-    <v-content>
-      <nuxt />
-    </v-content>
+    <nuxt />
   </v-app>
 </template>
 
 <script>
+// import Vue from 'vue'
 
 export default {
   name: 'Default',
@@ -14,5 +13,15 @@ export default {
     return {
     }
   },
+  beforeCreate() {
+    // pluginだと$fireAuthがundefinedなのでLayoutで設定
+    this.$fireAuth.onAuthStateChanged((user) => {
+      this.__proto__.__proto__.$auth = user
+      this.__proto__.__proto__.$uid = user.uid
+    })
+    this.$fireAuth.signInAnonymously().catch((e) => {
+      console.error(e.code, e.message)
+    })
+  }
 }
 </script>

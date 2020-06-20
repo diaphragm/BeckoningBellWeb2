@@ -1,4 +1,5 @@
 <template>
+  <v-content>
     <v-container>
       <div class="text-center">
         <h1>狩人呼びの鐘Web</h1>
@@ -34,7 +35,7 @@
         </v-card-title>
         <v-card-text>
           <template v-if="bells.length">
-            <bells-table :bells="bells" :user="user" />
+            <bells-table :bells="bells" />
           </template>
           <template v-else>
             募集中の鐘はありません。<a href="https://twitter.com/BloodborneVoyyy">Twitter</a>もご確認ください。
@@ -42,6 +43,7 @@
         </v-card-text>
       </v-card>
     </v-container>
+  </v-content>
 </template>
 
 <script>
@@ -59,7 +61,6 @@ export default {
   },
   data() {
     return {
-      user: {},
       bells: [],
       form: {},
       snackbar: {open: false, message: '', color: 'info'},
@@ -67,13 +68,6 @@ export default {
   },
   created() {
     this.$bind('bells', this.$fireStore.collection('bells').where('silencedAt', '==', null).orderBy('createdAt', 'desc'))
-    this.$fireAuth.onAuthStateChanged((user) => {
-      this.user = user
-      console.log(user)
-    })
-    this.$fireAuth.signInAnonymously().catch((e) => {
-      console.log(e.code, e.message)
-    })
   },
   methods: {
     submit() {
@@ -98,6 +92,10 @@ export default {
     //       updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
     //   })
     // },
+    dev() {
+      console.log(this.$auth)
+      console.log(this.$uid)
+    }
   },
   watch: {
     bells(val) {

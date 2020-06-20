@@ -58,7 +58,7 @@ export default {
         return 'center'
       }
       // is own?
-      if (message.hunter.id === this.user.uid) {
+      if (message.hunter.id === this.$uid) {
         return 'end'
       } else {
         return 'start'

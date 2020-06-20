@@ -26,7 +26,7 @@ const FirestoreBbwUtils = {
     Vue.prototype.$ringBell = function(bell) {
       console.log('ring bell', bell)
       const data = compactBell(bell)
-      data.beckoner = this.user.uid
+      data.beckoner = this.$uid
       data.createdAt = this.$fireStoreObj.FieldValue.serverTimestamp()
       data.updatedAt = this.$fireStoreObj.FieldValue.serverTimestamp()
       data.silencedAt = null
