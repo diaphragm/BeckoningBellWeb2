@@ -11,7 +11,8 @@
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "deploy": "NODE_ENV=staging nuxt build; firebase use staging; firebase deploy",
-    "deploy:production": "NODE_ENV=production nuxt build; firebase use production; firebase deploy"
+    "deploy:production": "NODE_ENV=production nuxt build; firebase use production; firebase deploy",
+    "emulate": "firebase use staging; firebase emulators:start"
   },
   "dependencies": {
     "@nuxtjs/firebase": "^5.2.0",

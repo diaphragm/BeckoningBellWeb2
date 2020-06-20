@@ -19,6 +19,7 @@ const ENV: string = functions.config().app.env
 const ENV_CONFIG: {[key: string]: any} = config[ENV]
 
 const REGION = ENV_CONFIG['region']
+const BASE_URL = ENV_CONFIG['baseUrl']
 const RETWEET_INTERVAL: number = ENV_CONFIG['retweetInterval']
 const EXPIRE_TIME: number = ENV_CONFIG['bellBexpirationTime']
 const BELL_ATTR_LIST = ['place', 'password', 'note', 'region', 'silencedAt']
@@ -46,6 +47,17 @@ const bellDiff = (newBell: FirebaseFirestore.DocumentData, oldBell: FirebaseFire
   }
 }
 
+const uniqeArray = (array: any[]): any[] => {
+  return [...new Set(array)]
+}
+
+const mergeArray = (...arrays: any[]): any[] => {
+  return uniqeArray([].concat(...arrays))
+}
+
+
+// function
+
 const maintenanceBells = async (): Promise<void> => {
   const now = admin.firestore.Timestamp.fromDate(new Date)
 
@@ -69,6 +81,100 @@ const maintenanceBells = async (): Promise<void> => {
   })
 }
 
+const subscribeTopic = (tokens: string | string[], topics: string | string[]) => {
+  let topicList: string[]
+  if ('string' === typeof topics) topicList = [topics]
+  else topicList = topics
+
+  topicList.forEach(topic => {
+    admin.messaging().subscribeToTopic(tokens, topic)
+    .then(response => {
+      console.log('subscribe topic', {tokens, topic})
+    })
+    .catch(error => {
+      console.error('subscribe topic', error)
+    })
+  })
+}
+
+const unsubscribeTopic = (tokens: string | string[], topics: string | string[]) => {
+  let topicList: string[]
+  if ('string' === typeof topics) topicList = [topics]
+  else topicList = topics
+
+  topicList.forEach(topic => {
+    admin.messaging().unsubscribeFromTopic(tokens, topic)
+      .then(response => {
+        console.log('unsubscribe topic', { tokens, topic })
+      })
+      .catch(error => {
+        console.error('unsubscribe topic', error)
+      })
+  })
+}
+
+const sendNewBell = (bell: FirebaseFirestore.QueryDocumentSnapshot) => {
+  const id = bell.id
+  const { place, note } = bell.data() || {}
+  const title = `鐘Web|${place}で鐘が鳴っています。`
+  const body = `${note}`
+  const url = `${BASE_URL}${id}`
+  const payload = {
+    notification: {
+      title: title,
+      body: body,
+      click_action: url
+    },
+    topic: id
+  }
+
+  return admin.messaging().send(payload)
+}
+
+const sendNewMessage = async (message: FirebaseFirestore.QueryDocumentSnapshot) => {
+  const bell = await message.ref.parent.parent?.get()
+  if ('undefined' === typeof bell) {
+    console.error('parent bell not found', message)
+    return 1
+  }
+
+  const bellId = bell.id
+  const {place} = bell.data() || {}
+  const {body, type, hunter} = message.data() || {}
+  const url = `${BASE_URL}${bellId}`
+  const title = `鐘Web|${place}`
+
+  const notification = {
+    title: title,
+    click_action: url
+  }
+  switch (type) {
+    case 'text':
+      Object.assign(notification, {
+        body: `${hunter.name}\n「${body}」`
+      })
+      break
+    case 'stamp':
+      Object.assign(notification, {
+        body : `${hunter.name}`,
+        image: `${BASE_URL}${bellId}/stamp/${body}`
+      })
+      break
+    case 'system':
+      Object.assign(notification, {
+        body: body.replace('<br>', '\n')
+      })
+      break
+  }
+
+  const payload = {
+    notification: notification,
+    topic: bellId
+  }
+
+  return admin.messaging().send(payload)
+}
+
 
 // trigger
 
@@ -76,32 +182,36 @@ export const onCreatedBellTritter = functions
   .region(REGION)
   .firestore
   .document('bells/{bellId}')
-  .onCreate(async (snap, context) => {
+  .onCreate((snap, context) => {
     const id = snap.id
     const {place, note} = snap.data() || {}
-    const url = `${functions.config().app.base_url}${id}`
+    const url = `${BASE_URL}${id}`
     const message = `${place}で鐘を鳴らしています ${url}\n${note}`
 
-    try {
-      const tweet = await TwitterClient.post('statuses/update', {
-        status: message,
-      })
+    TwitterClient.post('statuses/update', {
+      status: message,
+    }).then(tweet => {
       const tweetUrl = genTweetUrl(tweet)
-
       return admin.firestore().collection('bells').doc(snap.id).update({
         tweetUrl: tweetUrl
       })
-    } catch (error) {
+    }).catch(error => {
       console.error(error)
-      return 1
-    }
+    })
+
+    sendNewBell(snap).catch(error => {
+      console.error(error)
+    })
+
+    return 0
   })
 
 export const onUpdatedBellTrigger = functions
   .region(REGION)
   .firestore
   .document('bells/{bellId}')
-  .onUpdate(async (change, context) => {
+  .onUpdate((change, context) => {
+    const bellId: string = context.params.bellId
     const newData = change.after.data()
     const oldData = change.before.data()
 
@@ -110,25 +220,71 @@ export const onUpdatedBellTrigger = functions
 
     if (diff) {
       if (diff.silencedAt || interval > RETWEET_INTERVAL) {
-        const id = change.after.id
         const { place, note, tweetUrl } = newData || {}
-        const url = `${functions.config().app.base_url}${id}`
+        const url = `${BASE_URL}${bellId}`
         const message = diff.silencedAt ?
           `【終了】 募集は終了しました` :
           `【更新】 ${place}で鐘を鳴らしています。 ${url}\n${note}`
         const status = `${message} ${tweetUrl}`
         const tweetId = tweetUrl.match(/\d+$/)[0]
 
-        try {
-          await TwitterClient.post('statuses/update', {
-            status: status,
-            in_reply_to_status_id: tweetId
-          })
-        } catch (error){
+        TwitterClient.post('statuses/update', {
+          status: status,
+          in_reply_to_status_id: tweetId
+        }).catch(error => {
           console.error(error)
-          return 1
-        }
+        })
       }
+
+      if (diff.silencedAt) {
+        admin.firestore().collection('hunters').where('subscriptions', 'array-contains', bellId)
+        .get().then(snap => {
+          const tokens = snap.docs.map(doc => doc.data().token)
+          unsubscribeTopic(tokens, bellId)
+        }).catch(error => {
+          console.error(error)
+        })
+      }
+    }
+
+    return 0
+  })
+
+export const onCreatedMessageTrigger = functions
+  .region(REGION)
+  .firestore
+  .document('bells/{bellId}/messages/{messageId}')
+  .onCreate((snap, context) => {
+    sendNewMessage(snap).catch(error => {
+      console.error(error)
+    })
+
+    return 0
+  })
+
+export const onUpdatedHunterTrigger = functions
+  .region(REGION)
+  .firestore
+  .document('hunters/{hunterId}')
+  .onUpdate((change, context) => {
+    const newToken: string = change.after.data().token
+    const oldToken: string = change.before.data().token
+    const newSubs: string[] = change.before.data().subscriptions || []
+    const oldSubs: string[] = change.before.data().subscriptions || []
+
+    if (newToken === oldToken) {
+      mergeArray(newSubs, oldSubs).forEach((topic: string) => {
+        const newState = newSubs.includes(topic)
+        const oldState = oldSubs.includes(topic)
+        if (newState && !oldState) {
+          subscribeTopic(newToken, topic)
+        } else if (!newState && oldState) {
+          unsubscribeTopic(newToken, topic)
+        }
+      })
+    } else {
+      unsubscribeTopic(oldToken, oldSubs)
+      subscribeTopic(newToken, newSubs)
     }
 
     return 0
