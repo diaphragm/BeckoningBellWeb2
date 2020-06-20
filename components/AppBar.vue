@@ -2,15 +2,20 @@
   <v-card class="floating-toolbar">
       <v-toolbar dense flat>
         <template v-if="showMenu">
-        <v-btn icon @click="home">
-          <v-icon>mdi-home</v-icon>
-        </v-btn>
+          <v-btn icon @click="home">
+            <v-icon>mdi-home</v-icon>
+          </v-btn>
 
-          <v-spacer />
-          <v-toolbar-title>狩人呼びの鐘Web</v-toolbar-title>
-          <v-spacer />
+            <v-spacer />
+            <v-toolbar-title>狩人呼びの鐘Web</v-toolbar-title>
+            <v-spacer />
 
-        <re-ring-bell-form :bell="bell" />
+          <re-ring-bell-form :bell="bell" />
+
+          <v-btn icon @click="toggleSubscription">
+            <v-icon v-if="isSub">mdi-message-bulleted</v-icon>
+            <v-icon v-else>mdi-message-bulleted-off</v-icon>
+          </v-btn>
         </template>
         <v-btn icon @click="showMenu = !showMenu">
           <v-icon>
@@ -36,20 +41,41 @@
 import ReRingBellForm from '~/components/ReRingBellForm.vue'
 
 export default {
-  props: ['bell', 'user'],
+  props: ['bell'],
   components: {
     ReRingBellForm
   },
   data() {
     return {
-      showMenu: true
+      showMenu: true,
+      isSub: null
     }
+  },
+  mounted() {
+    this.watchUid()
   },
   methods: {
     home() {
       this.$router.push({path: '/'})
     },
-  }
+    toggleSubscription() {
+      if ( this.isSub ) {
+        this.$fcmUnSubscribeBell(this.bell.id)
+      } else {
+        this.$fcmSubscribeBell(this.bell.id)
+      }
+      this.isSub = !this.isSub
+    },
+    watchUid() {
+      if (this.$uid) {
+        this.$fcmSubscriptions().then(subscriptions => {
+          this.isSub = subscriptions.includes(this.bell.id)
+        })
+      } else {
+        setTimeout(this.watchUid, 10)
+      }
+    }
+  },
 }
 </script>
 

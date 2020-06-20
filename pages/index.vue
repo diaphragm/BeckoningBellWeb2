@@ -25,6 +25,12 @@
           <v-btn color="primary" @click="submit">
             鐘を鳴らす
           </v-btn>
+          <v-btn color="primary" @click="$fcmSubscribeBell('bells')">
+            通知
+          </v-btn>
+          <v-btn color="primary" @click="$fcmUnSubscribeBell('bells')">
+            通知OFF
+          </v-btn>
         </v-card-actions>
 
         <!-- <ornament-separator /> -->
@@ -84,18 +90,6 @@ export default {
         })
       }
     },
-    // ringBell({ place, password, note, region }) {
-    //   return this.$fireStore.collection('bells').add({
-    //       place, password, note, region,
-    //       beckoner: this.user.uid,
-    //       createdAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
-    //       updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
-    //   })
-    // },
-    dev() {
-      console.log(this.$auth)
-      console.log(this.$uid)
-    }
   },
   watch: {
     bells(val) {

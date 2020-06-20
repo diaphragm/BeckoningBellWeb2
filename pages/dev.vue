@@ -13,10 +13,19 @@ export default {
   },
   created() {
     console.log({fireMess: this.$fireMess})
-    this.$fireMess.getToken().then(token => {
-      console.log(token)
-      this.token = token
+    this.$fireMess.onTokenRefresh(() => {
+      this.getFcmToken
     })
+    this.getFcmToken()
+  },
+
+  methods: {
+    getFcmToken() {
+      this.$fireMess.getToken().then(token => {
+        console.log(token)
+        this.token = token
+      })
+    }
   }
 }
 </script>

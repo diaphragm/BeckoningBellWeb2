@@ -62,6 +62,55 @@ const FirestoreBbwUtils = {
         createdAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
       })
     }
+
+    Vue.prototype.$fcmToken = null
+
+    Vue.prototype.$fcmSyncToken = async function () {
+      return this.$fireMess.getToken().then(async (token) => {
+        console.log(token, this.$uid)
+
+        Vue.prototype.$fcmToken = token
+        const ref = this.$fireStore.collection('hunters').doc(this.$uid)
+        const snap = await ref.get()
+        if (snap.exists) {
+          ref.update({
+            token,
+            updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
+           })
+        } else {
+          ref.set({
+            token,
+            createdAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
+            updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
+          })
+        }
+      })
+    }
+
+    Vue.prototype.$fcmSubscribeBell = async function (bellId) {
+      if (!this.$fcmToken) await this.$fcmSyncToken()
+
+      return this.$fireStore.collection('hunters').doc(this.$uid).update({
+        subscriptions: this.$fireStoreObj.FieldValue.arrayUnion(bellId),
+        updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
+      })
+    }
+
+    Vue.prototype.$fcmUnSubscribeBell = async function (bellId) {
+      console.log(this.$fcmToken)
+
+      return this.$fireStore.collection('hunters').doc(this.$uid).update({
+        subscriptions: this.$fireStoreObj.FieldValue.arrayRemove(bellId),
+        updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
+      })
+    }
+
+    Vue.prototype.$fcmSubscriptions = async function () {
+      if (!this.$uid) return []
+
+      const snap = await this.$fireStore.collection('hunters').doc(this.$uid).get()
+      return snap.data().subscriptions || []
+    }
   }
 }
 
