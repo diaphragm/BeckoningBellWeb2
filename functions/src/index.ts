@@ -118,14 +118,22 @@ const sendNewBell = (bell: FirebaseFirestore.QueryDocumentSnapshot) => {
   const { place, note } = bell.data() || {}
   const title = `鐘Web|${place}で鐘が鳴っています。`
   const body = `${note}`
-  const url = `${BASE_URL}${id}`
-  const payload = {
-    notification: {
-      title: title,
-      body: body,
-      click_action: url
-    },
-    topic: id
+  const url = `${BASE_URL}/${id}`
+
+  const notification = {
+    title: title,
+    body: body
+  }
+
+  const payload: admin.messaging.Message = {
+    topic: id,
+    notification: notification,
+    webpush: {
+      notification: notification,
+      fcmOptions: {
+        link: url
+      }
+    }
   }
 
   return admin.messaging().send(payload)
@@ -141,35 +149,34 @@ const sendNewMessage = async (message: FirebaseFirestore.QueryDocumentSnapshot) 
   const bellId = bell.id
   const {place} = bell.data() || {}
   const {body, type, hunter} = message.data() || {}
-  const url = `${BASE_URL}${bellId}`
+  const url = `${BASE_URL}/${bellId}`
   const title = `鐘Web|${place}`
 
-  const notification = {
-    title: title,
-    click_action: url
+  const notification: {[key: string]: string|undefined} = {
+    title: title
   }
   switch (type) {
     case 'text':
-      Object.assign(notification, {
-        body: `${hunter.name}\n「${body}」`
-      })
+      notification.body = `${hunter.name}\n「${body}」`
       break
     case 'stamp':
-      Object.assign(notification, {
-        body : `${hunter.name}`,
-        image: `${BASE_URL}${bellId}/stamp/${body}`
-      })
+      notification.body = `${hunter.name}`
+      notification.image = `${BASE_URL}/stamps/${body}`
       break
     case 'system':
-      Object.assign(notification, {
-        body: body.replace('<br>', '\n')
-      })
+      notification.body = body.replace('<br>', '\n')
       break
   }
 
-  const payload = {
+  const payload: admin.messaging.Message = {
+    topic: bellId,
     notification: notification,
-    topic: bellId
+    webpush: {
+      notification: notification,
+      fcmOptions: {
+        link: url
+      }
+    }
   }
 
   return admin.messaging().send(payload)
@@ -185,7 +192,7 @@ export const onCreatedBellTritter = functions
   .onCreate((snap, context) => {
     const id = snap.id
     const {place, note} = snap.data() || {}
-    const url = `${BASE_URL}${id}`
+    const url = `${BASE_URL}/${id}`
     const message = `${place}で鐘を鳴らしています ${url}\n${note}`
 
     TwitterClient.post('statuses/update', {
@@ -221,7 +228,7 @@ export const onUpdatedBellTrigger = functions
     if (diff) {
       if (diff.silencedAt || interval > RETWEET_INTERVAL) {
         const { place, note, tweetUrl } = newData || {}
-        const url = `${BASE_URL}${bellId}`
+        const url = `${BASE_URL}/${bellId}`
         const message = diff.silencedAt ?
           `【終了】 募集は終了しました` :
           `【更新】 ${place}で鐘を鳴らしています。 ${url}\n${note}`
@@ -269,7 +276,7 @@ export const onUpdatedHunterTrigger = functions
   .onUpdate((change, context) => {
     const newToken: string = change.after.data().token
     const oldToken: string = change.before.data().token
-    const newSubs: string[] = change.before.data().subscriptions || []
+    const newSubs: string[] = change.after.data().subscriptions || []
     const oldSubs: string[] = change.before.data().subscriptions || []
 
     if (newToken === oldToken) {
