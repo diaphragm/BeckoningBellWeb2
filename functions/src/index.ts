@@ -116,8 +116,8 @@ const unsubscribeTopic = (tokens: string | string[], topics: string | string[]) 
 const sendNewBell = (bell: FirebaseFirestore.QueryDocumentSnapshot) => {
   const id = bell.id
   const { place, note } = bell.data() || {}
-  const title = `鐘Web|${place}で鐘が鳴っています。`
-  const body = `${note}`
+  const title = `鐘Web|${place || ''}で鐘が鳴っています。`
+  const body = `${note || ''}`
   const url = `${BASE_URL}/${id}`
 
   const notification = {
@@ -126,7 +126,7 @@ const sendNewBell = (bell: FirebaseFirestore.QueryDocumentSnapshot) => {
   }
 
   const payload: admin.messaging.Message = {
-    topic: id,
+    topic: 'bells',
     notification: notification,
     webpush: {
       notification: notification,
