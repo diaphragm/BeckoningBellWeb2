@@ -24,12 +24,12 @@
   - [x] 新しい鐘
   - [x] 更新時
   - [x] 終了時
-  - [ ] truncate
-- [ ] WebPush
+  - [x] truncate
+- [x] WebPush
   - [x] 新しい鐘が鳴ったら(index)
   - [x] 特定の鐘でメッセージ飛んできたら(bell/:id)
-  - [ ] 画面にON/OFFボタンを付ける
-  - [ ] 通知のタイムラグを何とかする。1分以上は破棄とかする
+  - [x] 画面にON/OFFボタンを付ける
+  - [x] 通知のタイムラグを何とかする。1分以上は破棄とかする
 - [ ] OGP
   - [ ] imageは募集場所をばばーんと
   - [ ] titleは募集場所
@@ -45,8 +45,11 @@
   - [ ] アク禁機能
     - [ ] DB直接弄ったりしてお手軽に実装したい
 - [ ] VueもTypeScript化
-- [ ] Google Fonts使うと重くなるのどうにかする
+- [x] Google Fonts使うと重くなるのどうにかする
   - Androidだと明朝体入ってなくてダサい
+  - headerでlinkで読み込んだら何故か解決した
+- [ ] Vue Composition API使う
+  - [ ] Vue 3にする
 
 
 ## 設定

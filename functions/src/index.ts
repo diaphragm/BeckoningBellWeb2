@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import * as Twitter from 'twitter'
+import { parseTweet } from 'twitter-text'
 import { config } from './env.config.js'
 
 admin.initializeApp()
@@ -33,7 +34,24 @@ const genTweetUrl = (tweet: Twitter.ResponseData): string => {
   return `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
 }
 
-const bellDiff = (newBell: FirebaseFirestore.DocumentData, oldBell: FirebaseFirestore.DocumentData) => {
+const truncateTweetText = (text: string, suffix: string = '', truncationSymbol: string = '…'): string => {
+  if (!parseTweet(suffix).valid) throw new Error('Suffix Length is too long.')
+
+  const raw = text + suffix
+  if (parseTweet(raw).valid) {
+    return raw
+  } else {
+    const { validRangeStart: start, validRangeEnd: end } = parseTweet(text)
+    let [i, truncated] = [0, '']
+    do {
+      truncated = text.slice(start, end + 1 - i) + truncationSymbol + suffix
+      i++
+    } while (!parseTweet(truncated).valid)
+    return truncated
+  }
+}
+
+const bellDiff = (newBell: FirebaseFirestore.DocumentData, oldBell: FirebaseFirestore.DocumentData): Bell | null => {
   const ret: Bell = {}
   BELL_ATTR_LIST.forEach((attr) => {
     if (newBell[attr] !== oldBell[attr]) {
@@ -196,10 +214,10 @@ export const onCreatedBellTritter = functions
     const id = snap.id
     const {place, note} = snap.data() || {}
     const url = `${BASE_URL}/${id}`
-    const message = `${place}で鐘を鳴らしています ${url}\n${note}`
+    const message = `${place}で鐘を鳴らしています。\n${url}\n${note}`
 
     TwitterClient.post('statuses/update', {
-      status: message,
+      status: truncateTweetText(message),
     }).then(tweet => {
       const tweetUrl = genTweetUrl(tweet)
       return admin.firestore().collection('bells').doc(snap.id).update({
@@ -235,11 +253,10 @@ export const onUpdatedBellTrigger = functions
         const message = diff.silencedAt ?
           `【終了】 募集は終了しました` :
           `【更新】 ${place}で鐘を鳴らしています。 ${url}\n${note}`
-        const status = `${message} ${tweetUrl}`
         const tweetId = tweetUrl.match(/\d+$/)[0]
 
         TwitterClient.post('statuses/update', {
-          status: status,
+          status: truncateTweetText(message, ' ' + tweetUrl),
           in_reply_to_status_id: tweetId
         }).catch(error => {
           console.error(error)
