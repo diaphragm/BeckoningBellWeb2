@@ -172,6 +172,9 @@ const sendNewMessage = async (message: FirebaseFirestore.QueryDocumentSnapshot) 
     topic: bellId,
     notification: notification,
     webpush: {
+      headers: {
+        TTL: '60'
+      },
       notification: notification,
       fcmOptions: {
         link: url
