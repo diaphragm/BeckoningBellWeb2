@@ -1,6 +1,10 @@
 <template>
   <v-content>
     <v-container>
+      <v-toolbar dense flat>
+        <v-spacer />
+        <notification-toggle-button />
+      </v-toolbar>
       <div class="text-center">
         <h1>狩人呼びの鐘Web</h1>
         <h2>The Old Hunters</h2>
@@ -24,12 +28,6 @@
         <v-card-actions class="d-flex justify-center">
           <v-btn color="primary" @click="submit">
             鐘を鳴らす
-          </v-btn>
-          <v-btn color="primary" @click="$fcmSubscribeBell('bells')">
-            通知
-          </v-btn>
-          <v-btn color="primary" @click="$fcmUnSubscribeBell('bells')">
-            通知OFF
           </v-btn>
         </v-card-actions>
 
@@ -57,13 +55,15 @@ import BellsTable from '~/components/BellsTable.vue'
 import OrnamentSeparator from '~/components/OrnamentSeparator.vue'
 import BellForm from '~/components/BellForm.vue'
 import Snackbar from '~/components/Snackbar.vue'
+import NotificationToggleButton from '~/components/NotificationToggleButton.vue'
 
 export default {
   components: {
     BellsTable,
     OrnamentSeparator,
     BellForm,
-    Snackbar
+    Snackbar,
+    NotificationToggleButton
   },
   data() {
     return {

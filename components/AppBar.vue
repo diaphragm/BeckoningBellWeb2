@@ -12,10 +12,11 @@
 
           <re-ring-bell-form :bell="bell" />
 
-          <v-btn icon @click="toggleSubscription">
+          <!-- <v-btn icon @click="toggleSubscription">
             <v-icon v-if="isSub">mdi-message-bulleted</v-icon>
             <v-icon v-else>mdi-message-bulleted-off</v-icon>
-          </v-btn>
+          </v-btn> -->
+          <notification-toggle-button />
         </template>
         <v-btn icon @click="showMenu = !showMenu">
           <v-icon>
@@ -39,11 +40,14 @@
 
 <script>
 import ReRingBellForm from '~/components/ReRingBellForm.vue'
+import NotificationToggleButton from '~/components/NotificationToggleButton.vue'
+
 
 export default {
   props: ['bell'],
   components: {
-    ReRingBellForm
+    ReRingBellForm,
+    NotificationToggleButton
   },
   data() {
     return {
@@ -89,4 +93,3 @@ export default {
     max-width: 90vw;
   }
 </style>
-bb

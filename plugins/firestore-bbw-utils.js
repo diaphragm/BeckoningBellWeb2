@@ -87,21 +87,29 @@ const FirestoreBbwUtils = {
       })
     }
 
-    Vue.prototype.$fcmSubscribeBell = async function (bellId) {
-      if (!this.$fcmToken) await this.$fcmSyncToken()
+    Vue.prototype._getTokenPromise = async function () {
+      if (!this.$fcmToken) {
+        return this.$fcmSyncToken()
+      }
+    }
 
-      return this.$fireStore.collection('hunters').doc(this.$uid).update({
-        subscriptions: this.$fireStoreObj.FieldValue.arrayUnion(bellId),
-        updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
+    Vue.prototype.$fcmSubscribeBell = async function (bellId) {
+      return this._getTokenPromise().then(() => {
+        return this.$fireStore.collection('hunters').doc(this.$uid).update({
+          subscriptions: this.$fireStoreObj.FieldValue.arrayUnion(bellId),
+          updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
+        })
       })
     }
 
     Vue.prototype.$fcmUnSubscribeBell = async function (bellId) {
       console.log(this.$fcmToken)
 
-      return this.$fireStore.collection('hunters').doc(this.$uid).update({
-        subscriptions: this.$fireStoreObj.FieldValue.arrayRemove(bellId),
-        updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
+      return this._getTokenPromise().then(() => {
+        this.$fireStore.collection('hunters').doc(this.$uid).update({
+          subscriptions: this.$fireStoreObj.FieldValue.arrayRemove(bellId),
+          updatedAt: this.$fireStoreObj.FieldValue.serverTimestamp(),
+        })
       })
     }
 
@@ -109,7 +117,7 @@ const FirestoreBbwUtils = {
       if (!this.$uid) return []
 
       const snap = await this.$fireStore.collection('hunters').doc(this.$uid).get()
-      return snap.data().subscriptions || []
+      return (snap.data() && snap.data().subscriptions) || []
     }
   }
 }
