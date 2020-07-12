@@ -35,7 +35,7 @@ const genTweetUrl = (tweet: Twitter.ResponseData): string => {
 }
 
 const truncateTweetText = (text: string, suffix: string = '', truncationSymbol: string = '…'): string => {
-  if (!parseTweet(suffix).valid) throw new Error('Suffix Length is too long.')
+  if (suffix != '' && !parseTweet(suffix).valid) throw new Error(`Suffix Length is too long.`)
 
   const raw = text + suffix
   if (parseTweet(raw).valid) {
@@ -253,7 +253,7 @@ export const onUpdatedBellTrigger = functions
         const message = diff.silencedAt ?
           `【終了】 募集は終了しました` :
           `【更新】 ${place}で鐘を鳴らしています。 ${url}\n${note}`
-        const tweetId = tweetUrl.match(/\d+$/)[0]
+        const tweetId = tweetUrl ? tweetUrl.match(/\d+$/)[0] : ''
 
         TwitterClient.post('statuses/update', {
           status: truncateTweetText(message, ' ' + tweetUrl),
