@@ -18,7 +18,7 @@
       <v-col v-else xl=8 lg=8 md=9 sm=10 cols=11 class="pa-1">
         <v-row>
           <v-col class="py-0">
-            <message :message="message" />
+            <message :message="message" :hunters="hunters" />
           </v-col>
         </v-row>
         <v-row justify="end">
@@ -38,7 +38,7 @@ import Message from '~/components/Message.vue'
 import SystemMessage from '~/components/SystemMessage.vue'
 
 export default {
-  props: ['messages', 'user'],
+  props: ['messages', 'hunters'],
   components: {
     TimeAgo, Message, SystemMessage
   },

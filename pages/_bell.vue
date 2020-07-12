@@ -1,11 +1,11 @@
 <template>
   <v-content>
-    <app-bar :bell="bell" />
+    <app-bar :bell="bell" :hunters="existsHunters" />
 
     <v-container class="main-container">
       <v-row justify="center">
         <v-col>
-          <message-list :messages="messages" />
+          <message-list :messages="messages" :hunters="existsHunters" />
         </v-col>
       </v-row>
     </v-container>
@@ -51,10 +51,8 @@ export default {
       bell: {},
       localMessages: [],
       remoteMessages: [],
-      form: {},
+      existsHunters: [],
       silenced: false,
-      _userName: null,
-      _userCaryll: null,
     }
   },
 
@@ -71,47 +69,6 @@ export default {
     isBeckoner() {
       return this.bell.beckoner && this.$uid && (this.bell.beckoner === this.$uid)
     },
-
-    // hunter.name, hunter.caryllにオブジェクトにするとcomputedが効かなくなるので値ごとにする
-    userName() {
-      if (this._userName) {
-        return this._userName
-      }
-      if (this.isBeckoner) {
-        this._userName = BeckonerName
-        return this._userName
-      }
-      if (this.existsHunters[this.$uid]) {
-        this._userName = this.existsHunters[this.$uid].name
-        return this._userName
-      }
-      this._userName = this.generateHunterName()
-      return this._userName
-    },
-
-    userCaryll() {
-      if (this._userCaryll) {
-        return this._userCaryll
-      }
-      if (this.isBeckoner) {
-        this._userCaryll = BeckonerCaryll
-        return this._userCaryll
-      }
-      if (this.existsHunters[this.$uid]) {
-        this._userCaryll = this.existsHunters[this.$uid].caryll
-        return this._userCaryll
-      }
-      this._userCaryll = this.generateHunterCaryll()
-      return this._userCaryll
-    },
-
-    existsHunters() {
-      const ret = {}
-      this.remoteMessages.forEach((message) => {
-        ret[message.hunter.id] = message.hunter
-      })
-      return ret
-    },
   },
 
   created() {
@@ -127,6 +84,7 @@ export default {
     })
     this.$bind('bell', bell)
     this.$bind('remoteMessages', bell.collection('messages').orderBy('createdAt', 'desc'))
+    this.$bind('existsHunters', bell.collection('hunters').orderBy('createdAt', 'asc'))
   },
 
   mounted() {
@@ -138,23 +96,28 @@ export default {
 
   methods: {
     sendMessage(message) {
-      const hunter = {
-        id: this.$uid,
-        name: this.userName,
-        caryll: this.userCaryll
+      const hunterId = this.$uid
+      if (!this.existsHunters.find(h => h.id == hunterId)) {
+          this.addHunter()
       }
-      this.$sendMessage(this.bell.id, hunter, message).then(() => {
+      this.$sendMessage(this.bell.id, hunterId, message).then(() => {
         this.$vuetify.goTo(0)
+      })
+    },
+
+    addHunter() {
+      const hunterId = this.$uid
+      this.bellObj.collection('hunters').doc(hunterId).set({
+        name: this.generateHunterName(),
+        caryll: this.generateHunterCaryll(),
+        isBeast: false,
+        createdAt: this.$fireStoreObj.FieldValue.serverTimestamp()
       })
     },
 
     sendLocalSystemMessage(body) {
       const createdAt = new this.$fireStoreObj.Timestamp.fromDate(new Date)
-      const hunter = {
-        id: 'local',
-        name: 'system',
-        caryll: ''
-      }
+      const hunter = 'local'
       this.localMessages.push({
         hunter: hunter,
         body: body,
@@ -163,11 +126,12 @@ export default {
       })
     },
 
-
     generateHunterName() {
+      if (this.bell.beckoner == this.$uid) return BeckonerName
+
       let name = ''
       const limit = 1000
-      const excludes = Object.values(this.existsHunters).map(hunter => hunter.name)
+      const excludes = this.existsHunters.map(hunter => hunter.name)
       let i = 0
       do {
         const firstName = FirstNameList[Math.floor(Math.random() * FirstNameList.length)]
@@ -179,8 +143,10 @@ export default {
     },
 
     generateHunterCaryll() {
+      if (this.bell.beckoner == this.$uid) return BeckonerCaryll
+
       let caryll = ''
-      const exists = Object.values(this.existsHunters).map(hunter => hunter.caryll)
+      const exists = this.existsHunters.map(hunter => hunter.caryll)
       const availables =  CaryllRuneList.filter(caryll => !exists.includes(caryll))
       if ( availables.length > 0 ) {
         caryll = availables[Math.floor(Math.random() * availables.length)]
@@ -193,6 +159,7 @@ export default {
 
     dev() {
       console.log('dev')
+      console.log(this)
     }
   },
 
@@ -209,8 +176,7 @@ export default {
       }
     },
     'bell.silencedAt': function(val) {
-      // this.silenced = !!val
-      this.silenced = false
+      this.silenced = !!val
     },
   },
 }

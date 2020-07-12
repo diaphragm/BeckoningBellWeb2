@@ -1,6 +1,19 @@
 <template>
   <div>
     <v-navigation-drawer app v-model="drawer" :permanent="permanent">
+      <template v-if="$uid && bell.beckoner == $uid">
+        <v-list nav>
+          <v-list-item>
+            <re-ring-bell-form :bell="bell" />
+          </v-list-item>
+          <v-list-item>
+            <silencing-bell-form :bell="bell" />
+          </v-list-item>
+        </v-list>
+
+        <v-divider />
+      </template>
+
       <v-list nav>
         <v-list-item>
           <v-list-item-content>
@@ -23,28 +36,34 @@
         <v-list-item>
           <v-list-item-content>
             <v-list-item-subtitle>備考</v-list-item-subtitle>
-            <!-- <v-card flat>
-              <v-card-text> {{ bell.note }} </v-card-text>
-            </v-card> -->
             <p>
-              {{ bell.note }}
+              <span v-html="htmlize(bell.note)"></span>
             </p>
           </v-list-item-content>
         </v-list-item>
       </v-list>
 
-      <v-list nav v-if="bell.beckoner == $uid">
-        <v-divider />
+      <v-divider />
+
+      <v-list-item>
+        <v-list-item-subtitle>
+          共鳴中の狩人
+        </v-list-item-subtitle>
+      </v-list-item>
+      <v-list nav v-for="hunter in hunters" :key="hunter.id">
         <v-list-item>
-          <re-ring-bell-form :bell="bell" />
-        </v-list-item>
-        <v-list-item>
-          <silencing-bell-form :bell="bell" />
+          <v-list-item-avatar>
+            <v-img :src="`caryll/${hunter.caryll}`" height="32" contain />
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>{{ hunter.name }}</v-list-item-title>
+            <v-list-item-subtitle v-if="hunter.id == $uid">あなた</v-list-item-subtitle>
+          </v-list-item-content>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app dense hide-on-scroll inverted-scroll>
+    <v-app-bar app dense :inverted-scroll="hide" v-resize="resized" v-scroll="resized">
       <v-app-bar-nav-icon v-if="!permanent" @click="drawer = !drawer" />
       <v-spacer />
       <v-toolbar-title>狩人呼びの鐘Web</v-toolbar-title>
@@ -62,7 +81,7 @@ import NotificationToggleButton from '~/components/NotificationToggleButton.vue'
 
 
 export default {
-  props: ['bell'],
+  props: ['bell', 'hunters'],
   components: {
     ReRingBellForm,
     SilencingBellForm,
@@ -71,28 +90,24 @@ export default {
   data() {
     return {
       drawer: true,
+      hide: false,
     }
   },
   computed: {
     permanent() {
       return this.$vuetify.breakpoint.mdAndUp
-    }
-  },
-  mounted() {
-    this.watchUid()
+    },
   },
   methods: {
+    htmlize(text) {
+      if (!text) return ''
+      return this.$sanitizeBr(text.replace('\n', '<br>'))
+    },
     home() {
       this.$router.push({path: '/'})
     },
-    watchUid() {
-      if (this.$uid) {
-        this.$fcmSubscriptions().then(subscriptions => {
-          this.isSub = subscriptions.includes(this.bell.id)
-        })
-      } else {
-        setTimeout(this.watchUid, 10)
-      }
+    resized(e) {
+      this.hide = window.innerHeight < this.$nuxt.$el.scrollHeight - 48
     }
   },
 }

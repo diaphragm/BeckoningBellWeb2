@@ -2,10 +2,10 @@
   <v-card>
     <v-row align="center">
       <v-col xl=3 lg=3 md=3 sm=4 cols=5 justify="center" >
-        <v-img :src="`caryll/${message.hunter.caryll}`" height="32" contain />
+        <v-img :src="`caryll/${hunter.caryll}`" height="32" contain />
 
         <v-card-subtitle class="pa-1 ma-1 text-center">
-          {{ message.hunter.name }}
+          {{ hunter.name }}
         </v-card-subtitle>
       </v-col>
       <v-col xl=9 lg=9 md=9 sm=8 cols=7 justify="start">
@@ -28,12 +28,17 @@
 import TimeAgo from '~/components/TimeAgo.vue'
 
 export default {
-  props: ['message'],
+  props: ['message', 'hunters'],
   components: {
     TimeAgo
   },
   data() {
     return {
+    }
+  },
+  computed: {
+    hunter() {
+      return this.hunters.find(h => h.id == this.message.hunter) || {name: null, caryll: null}
     }
   },
   methods: {

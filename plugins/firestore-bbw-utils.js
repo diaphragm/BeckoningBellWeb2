@@ -53,10 +53,10 @@ const FirestoreBbwUtils = {
       })
     }
 
-    Vue.prototype.$sendMessage = function(bellId, hunter, message) {
-      console.log('send message', {bellId, hunter, message})
+    Vue.prototype.$sendMessage = function(bellId, hunterId, message) {
+      console.log('send message', {bellId, hunterId, message})
       return this.$fireStore.collection('bells').doc(bellId).collection('messages').add({
-        hunter: hunter,
+        hunter: hunterId,
         body: message.body,
         type: message.type,
         createdAt: this.$fireStoreObj.FieldValue.serverTimestamp(),

@@ -7,7 +7,7 @@ export default {
   data: function() {
     return {
       isSub: false,
-      bellId: this.$route.params.bell || 'bells'
+      bellId: this.$route.params.bell || 'bells',
     }
   },
   computed: {
@@ -60,7 +60,7 @@ export default {
   },
   mounted() {
     this.watchUid(this.checkSubscribeState)
-  }
+  },
 }
 </script>
 
