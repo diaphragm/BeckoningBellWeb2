@@ -21,7 +21,7 @@ export default {
     // pluginだと$fireAuthがundefinedなのでLayoutで設定
     this.__proto__.__proto__.$uid = null
     await this.$fireAuth.onAuthStateChanged((user) => {
-      this.__proto__.__proto__.$uid = user.uid
+      if (user) this.__proto__.__proto__.$uid = user.uid
     })
     await this.$fireAuth.signInAnonymously()
 
