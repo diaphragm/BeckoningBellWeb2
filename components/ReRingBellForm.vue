@@ -1,25 +1,19 @@
 <template>
   <div>
-    <v-btn icon @click.stop="openDialog">
-      <v-icon>mdi-bell-plus</v-icon>
+    <v-btn @click.stop="openDialog" color="primary" outlined>
+      鐘の情報を更新する
     </v-btn>
 
     <v-dialog v-model="dialog" max-width="500">
       <v-card>
-        <v-card-title class="justify-center">
-          募集を終了する
-        </v-card-title>
-        <v-card-actions class="d-flex justify-center">
-          <v-btn color="error" @click="stop">
-            空砲を鳴らす
-          </v-btn>
-        </v-card-actions>
-
-        <v-divider class="mt-3"/>
-
-        <v-card-title class="justify-center">
+        <v-toolbar flat dense>
+          <v-spacer />
           鐘の情報を更新する
-        </v-card-title>
+          <v-spacer />
+          <v-btn icon @click="dialog=false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar>
         <v-card-text>
           <bell-form ref="bellForm" :form="form" />
         </v-card-text>

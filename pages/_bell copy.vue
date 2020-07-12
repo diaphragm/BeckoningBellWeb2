@@ -209,9 +209,8 @@ export default {
       }
     },
     'bell.silencedAt': function(val) {
-      // this.silenced = !!val
-      this.silenced = false
-    },
+      this.silenced = !!val
+    }
   },
 }
 </script>
