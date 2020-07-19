@@ -55,7 +55,7 @@ export default {
     [
       '@nuxtjs/firebase',
       {
-        config: config[NODE_ENV].firebaseConfig,
+        config: config[NODE_ENV].firebase,
         onFirebaseHosting: true,
         services: {
           auth: true,
@@ -64,6 +64,10 @@ export default {
           analytics: true
         }
       }
+    ],
+    [
+      '@nuxtjs/google-adsense',
+      config[NODE_ENV].googleAdsense
     ]
   ],
   /*

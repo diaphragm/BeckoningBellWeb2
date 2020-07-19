@@ -19,6 +19,7 @@
             </v-card-text>
 
             <!-- <ornament-separator /> -->
+            <adsbygoogle ad-slot="1588491605" ad-format="horiozntal" />
             <v-divider />
 
             <v-card-title>
@@ -28,13 +29,14 @@
               <bell-form ref="bellForm" :form="form" />
             </v-card-text>
             <v-card-actions class="d-flex justify-center">
-              <v-btn color="primary" @click="submit">
+              <v-btn outlined color="primary" @click="submit">
                 鐘を鳴らす
               </v-btn>
             </v-card-actions>
 
             <!-- <ornament-separator /> -->
             <v-divider />
+            <adsbygoogle ad-slot="1588491605" ad-format="horiozntal" />
 
             <v-card-title>
               現在募集中の鐘
@@ -51,7 +53,8 @@
         </v-col>
 
         <v-col>
-          <a class="twitter-timeline" data-width="400" data-height="600" data-theme="dark" href="https://twitter.com/BloodborneVoyyy?ref_src=twsrc%5Etfw">Tweets by BloodborneVoyyy</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+          <twitter-timeline ad-slot="4883796830" />
+          <adsbygoogle />
         </v-col>
       </v-row>
     </v-container>
