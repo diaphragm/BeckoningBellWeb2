@@ -1,33 +1,12 @@
 <template>
   <v-container>
-    <v-row v-for="message in messages" :justify="justify(message)" :key="message.id">
-
-      <v-col v-if="message.type === 'system'" cols=8>
-        <v-row>
-          <v-col class="py-0">
-            <system-message :message="message" />
-          </v-col>
-        </v-row>
-        <v-row justify="end">
-          <v-col cols=1 class="pa-0">
-            <span class="caption"><time-ago :time="message.createdAt" /></span>
-          </v-col>
-        </v-row>
+    <v-row v-for="message in messages" :key="message.id" :justify="justify(message)">
+      <v-col xl=7 lg=7 md=8 sm=9 cols=10 >
+        <message :message="message" :hunters="hunters" :bell="bell" />
+        <div class="text-right caption">
+          <time-ago :time="message.createdAt" />
+        </div>
       </v-col>
-
-      <v-col v-else xl=8 lg=8 md=9 sm=10 cols=11 class="pa-1">
-        <v-row>
-          <v-col class="py-0">
-            <message :message="message" :hunters="hunters" />
-          </v-col>
-        </v-row>
-        <v-row justify="end">
-          <v-col cols=1 class="pa-0">
-            <span class="caption"><time-ago :time="message.createdAt" /></span>
-          </v-col>
-        </v-row>
-      </v-col>
-
     </v-row>
   </v-container>
 </template>
@@ -38,7 +17,7 @@ import Message from '~/components/Message.vue'
 import SystemMessage from '~/components/SystemMessage.vue'
 
 export default {
-  props: ['messages', 'hunters'],
+  props: ['messages', 'hunters', 'bell'],
   components: {
     TimeAgo, Message, SystemMessage
   },
@@ -58,7 +37,7 @@ export default {
         return 'center'
       }
       // is own?
-      if (message.hunter.id === this.$uid) {
+      if (message.hunter === this.$uid) {
         return 'end'
       } else {
         return 'start'

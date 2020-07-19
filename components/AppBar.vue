@@ -37,7 +37,7 @@
           <v-list-item-content>
             <v-list-item-subtitle>備考</v-list-item-subtitle>
             <p>
-              <span v-html="htmlize(bell.note)"></span>
+              <span v-html="$htmlize(bell.note)"></span>
             </p>
           </v-list-item-content>
         </v-list-item>
@@ -99,10 +99,6 @@ export default {
     },
   },
   methods: {
-    htmlize(text) {
-      if (!text) return ''
-      return this.$sanitizeBr(text.replace('\n', '<br>'))
-    },
     home() {
       this.$router.push({path: '/'})
     },

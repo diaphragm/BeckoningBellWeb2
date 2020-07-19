@@ -10,7 +10,10 @@ Vue.prototype.$sanitize = function(dirty) {
   return sanitizeHtml(dirty, {allowedTags, allowedAttributes})
 }
 
-Vue.prototype.$sanitizeBr = function (dirty) {
+Vue.prototype.$htmlize = function (dirty) {
+  if (!dirty) return null
+
+  const text = dirty.replace(/\n/g, '<br>')
   const allowedTags = ['br']
-  return sanitizeHtml(dirty, { allowedTags })
+  return sanitizeHtml(text, { allowedTags })
 }

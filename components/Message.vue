@@ -1,26 +1,28 @@
 <template>
-  <v-card>
-    <v-row align="center">
-      <v-col xl=3 lg=3 md=3 sm=4 cols=5 justify="center" >
+  <v-card class="d-flex align-center" :class="{ beckoner: bell.beckoner == message.hunter}">
+    <v-card flat class="text-center px-0 px-sm-2 py-0" v-if="message.type !== 'system'" dense>
+      <v-avatar tile>
         <v-img :src="`caryll/${hunter.caryll}`" height="32" contain />
-
-        <v-card-subtitle class="pa-1 ma-1 text-center">
-          {{ hunter.name }}
-        </v-card-subtitle>
-      </v-col>
-      <v-col xl=9 lg=9 md=9 sm=8 cols=7 justify="start">
-        <v-card-text v-if="message.type == 'text'" class="pa-1 ma-1">
-          <span v-html="$sanitize(message.body)"></span>
-        </v-card-text>
-        <v-img v-if="message.type == 'stamp'" class="pa-1 ma-1"
+      </v-avatar>
+      <v-card-subtitle class="px-2 py-1">
+        {{ hunter.name }}
+      </v-card-subtitle>
+    </v-card>
+    <v-card flat>
+      <v-card-text v-if="message.type === 'stamp'">
+        <v-img class="pa-1 ma-1"
           :src="`stamps/${message.body}`"
           height="100"
+          width="150"
           contain
           position="left"
         />
-        <v-spacer />
-      </v-col>
-    </v-row>
+      </v-card-text>
+      <v-card-text v-else>
+        <span v-if="message.type === 'system'" v-html="$sanitize(message.body)"></span>
+        <span v-else v-html="$htmlize(message.body)"></span>
+      </v-card-text>
+    </v-card>
   </v-card>
 </template>
 
@@ -28,7 +30,7 @@
 import TimeAgo from '~/components/TimeAgo.vue'
 
 export default {
-  props: ['message', 'hunters'],
+  props: ['message', 'hunters', 'bell'],
   components: {
     TimeAgo
   },
@@ -51,7 +53,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  .beckoner {
+    border: 1px #b9966e solid;
+  }
   .hunter-icon .v-image__image {
     filter: brightness(0) invert(0);
   }

@@ -22,7 +22,7 @@
         <v-card-title>
           鐘を鳴らす
         </v-card-title>
-        <v-card-text>
+        <v-card-text class="pb-0">
           <bell-form ref="bellForm" :form="form" />
         </v-card-text>
         <v-card-actions class="d-flex justify-center">

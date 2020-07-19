@@ -7,6 +7,7 @@
     <v-dialog v-model="dialog" max-width="500">
       <v-card>
         <v-toolbar flat dense>
+          <v-btn icon disabled />
           <v-spacer />
           鐘の情報を更新する
           <v-spacer />
@@ -14,7 +15,8 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-toolbar>
-        <v-card-text>
+
+        <v-card-text class="pb-0">
           <bell-form ref="bellForm" :form="form" />
         </v-card-text>
         <v-card-actions class="d-flex justify-center">
@@ -22,6 +24,9 @@
             鐘を鳴らし直す
           </v-btn>
         </v-card-actions>
+        <v-card-subtitle class="text-center">
+          <span class="caption">連続して鳴らしてもTwitterには反映されない場合があります。</span>
+        </v-card-subtitle>
       </v-card>
     </v-dialog>
   </div>
@@ -83,10 +88,10 @@ export default {
 
       const body = '鐘の情報が更新されました。<br>'
       + Object.entries(diff).map(([key, value]) => {
-        return `${attrName[key]}: ${value}`
+        return `${attrName[key]}:\n${value}`.replace(/\n/g, '<br>')
       }).join('<br>')
 
-      const hunter = {id: 'remote', name: 'system', caryll: ''}
+      const hunter = 'system'
       const message = {body: body, type: 'system'}
 
       return this.$sendMessage(this.bell.id, hunter, message)

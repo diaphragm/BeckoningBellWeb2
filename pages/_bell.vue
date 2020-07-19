@@ -1,11 +1,11 @@
 <template>
-  <v-content>
+  <v-content class>
     <app-bar :bell="bell" :hunters="existsHunters" />
 
-    <v-container class="main-container">
+    <v-container class="main-container" style="max-width:800px;">
       <v-row justify="center">
         <v-col>
-          <message-list :messages="messages" :hunters="existsHunters" />
+          <message-list :messages="messages" :hunters="existsHunters" :bell="bell" />
         </v-col>
       </v-row>
     </v-container>
@@ -166,7 +166,7 @@ export default {
   watch: {
     isBeckoner(val, old) {
       if (val && !old) {
-        const icon = '<i class="v-icon notranslate mdi mdi-bell-plus"></i>'
+        const icon = '<i class="v-icon notranslate mdi mdi-menu"></i>'
         this.sendLocalSystemMessage(`
           右上の${icon}から募集を終了したり、鐘の情報を更新することができます。<br>
           鐘の情報を更新することで、Twitterで再募集することができます。<br>

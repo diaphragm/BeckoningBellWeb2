@@ -1,5 +1,5 @@
 <template>
-  <v-bottom-navigation fixed app grow id="bottom-navigation" active-class="no-active"
+  <v-bottom-navigation fixed app grow id="bottom-navigation" active-class="no-active" color="primary"
     class="justify-start justify-md-center justify-lg-center justify-xl-center">
 
     <template v-for="(messages, group) in messageList">
@@ -90,9 +90,5 @@ export default {
     max-height: 90vh;
     max-width: 90vw;
     overflow-y: auto;
-  }
-
-  .v-btn--active.no-active {
-    opacity: 0.6 !important;
   }
 </style>
