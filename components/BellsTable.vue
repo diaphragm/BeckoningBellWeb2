@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols=12 sm=6 md=6 xl=4 v-for="bell in bells" :key="bell.id">
+      <v-col cols=12 sm=12 md=6 xl=4 v-for="bell in bells" :key="bell.id">
         <v-card elevation=3 class="pa-2">
           <v-card-title>
             <nuxt-link :to="bell.id">{{ bell.place }}</nuxt-link>

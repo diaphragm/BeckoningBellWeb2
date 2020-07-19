@@ -10,42 +10,50 @@
         <h2>The Old Hunters</h2>
       </div>
 
-      <v-card class="ma-2">
-        <v-card-text>
-          <p>Bloodborneの協力プレイ募集サイトです。</p>
-          <p>Twitterでの募集機能、定型文やスタンプが使えるチャット機能があります。</p>
-        </v-card-text>
+      <v-row>
+        <v-col cols=12 sm=8>
+          <v-card class="ma-2">
+            <v-card-text>
+              <p>Bloodborneの協力プレイ募集サイトです。</p>
+              <p>Twitterでの募集機能、定型文やスタンプが使えるチャット機能があります。</p>
+            </v-card-text>
 
-        <!-- <ornament-separator /> -->
-        <v-divider />
+            <!-- <ornament-separator /> -->
+            <v-divider />
 
-        <v-card-title>
-          鐘を鳴らす
-        </v-card-title>
-        <v-card-text class="pb-0">
-          <bell-form ref="bellForm" :form="form" />
-        </v-card-text>
-        <v-card-actions class="d-flex justify-center">
-          <v-btn color="primary" @click="submit">
-            鐘を鳴らす
-          </v-btn>
-        </v-card-actions>
+            <v-card-title>
+              鐘を鳴らす
+            </v-card-title>
+            <v-card-text class="pb-0">
+              <bell-form ref="bellForm" :form="form" />
+            </v-card-text>
+            <v-card-actions class="d-flex justify-center">
+              <v-btn color="primary" @click="submit">
+                鐘を鳴らす
+              </v-btn>
+            </v-card-actions>
 
-        <!-- <ornament-separator /> -->
-        <v-divider />
+            <!-- <ornament-separator /> -->
+            <v-divider />
 
-        <v-card-title>
-          現在募集中の鐘
-        </v-card-title>
-        <v-card-text>
-          <template v-if="bells.length">
-            <bells-table :bells="bells" />
-          </template>
-          <template v-else>
-            募集中の鐘はありません。<a href="https://twitter.com/BloodborneVoyyy">Twitter</a>もご確認ください。
-          </template>
-        </v-card-text>
-      </v-card>
+            <v-card-title>
+              現在募集中の鐘
+            </v-card-title>
+            <v-card-text>
+              <template v-if="bells.length">
+                <bells-table :bells="bells" />
+              </template>
+              <template v-else>
+                募集中の鐘はありません。<a href="https://twitter.com/BloodborneVoyyy">Twitter</a>もご確認ください。
+              </template>
+            </v-card-text>
+          </v-card>
+        </v-col>
+
+        <v-col>
+          <a class="twitter-timeline" data-width="400" data-height="600" data-theme="dark" href="https://twitter.com/BloodborneVoyyy?ref_src=twsrc%5Etfw">Tweets by BloodborneVoyyy</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </v-col>
+      </v-row>
     </v-container>
   </v-content>
 </template>
@@ -56,6 +64,7 @@ import OrnamentSeparator from '~/components/OrnamentSeparator.vue'
 import BellForm from '~/components/BellForm.vue'
 import Snackbar from '~/components/Snackbar.vue'
 import NotificationToggleButton from '~/components/NotificationToggleButton.vue'
+import TwitterTimeline from '~/components/TwitterTimeline.vue'
 
 export default {
   components: {
@@ -63,7 +72,8 @@ export default {
     OrnamentSeparator,
     BellForm,
     Snackbar,
-    NotificationToggleButton
+    NotificationToggleButton,
+    TwitterTimeline
   },
   data() {
     return {
