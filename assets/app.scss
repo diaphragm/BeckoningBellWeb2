@@ -1,7 +1,8 @@
 $color-primary: #d4b505;
 $color-text-base: #e3e6c8;
 $color-text-accent: #b9966e;
-$color-text-gray: rgba(255, 255, 255, 0.7);
+$color-text-lightgray: #b2b2b2;
+$color-text-darkgray: #4c4c4c;
 $color-bg-base: #303030;
 $color-bg-light: #404040;
 
@@ -9,8 +10,12 @@ $color-bg-light: #404040;
   color: $color-text-base;
   background-color: $color-bg-base;
 }
+.v-btn {
+  color: $color-text-darkgray !important;
+  background-color: $color-bg-base !important;
+}
 .v-radio .v-icon {
-  color: $color-text-gray !important;
+  color: $color-text-lightgray !important;
 }
 .v-card {
   .v-card__title {
@@ -36,7 +41,7 @@ $color-bg-light: #404040;
     color: $color-text-accent !important;
   }
   .v-btn {
-    color: $color-text-gray !important;
+    color: $color-text-lightgray !important;
   }
 }
 .v-input {
