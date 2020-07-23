@@ -44,14 +44,13 @@
       </v-list>
 
       <v-divider />
-
-      <v-list-item>
-        <v-list-item-subtitle>
-          共鳴中の狩人
-        </v-list-item-subtitle>
-      </v-list-item>
-      <v-list nav v-for="hunter in hunters" :key="hunter.id">
+      <v-list nav>
         <v-list-item>
+          <v-list-item-subtitle>
+            共鳴中の狩人
+          </v-list-item-subtitle>
+        </v-list-item>
+        <v-list-item v-for="hunter in hunters" :key="hunter.id">
           <v-list-item-avatar>
             <v-img :src="`caryll/${hunter.caryll}`" height="32" contain />
           </v-list-item-avatar>

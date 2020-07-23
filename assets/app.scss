@@ -6,13 +6,13 @@ $color-text-darkgray: #4c4c4c;
 $color-bg-base: #303030;
 $color-bg-light: #404040;
 
+// Overwrite Vuetify theme
 .v-content {
   color: $color-text-base;
   background-color: $color-bg-base;
 }
 .v-btn {
   color: $color-text-darkgray !important;
-  background-color: $color-bg-base !important;
 }
 .v-radio .v-icon {
   color: $color-text-lightgray !important;
@@ -28,11 +28,13 @@ $color-bg-light: #404040;
 }
 .v-list {
   background-color: $color-bg-light !important;
-  .v-list-item {
-    .v-list-item__title,
-    .v-list-item__content {
-      color: $color-text-base !important;
-    }
+  .v-list-item__content,
+  .v-list-item__title {
+    color: $color-text-base !important;
+  }
+  .v-list-item__subtitle,
+  .v-subheader {
+    color: $color-text-accent !important;
   }
 }
 .v-toolbar {
@@ -45,9 +47,7 @@ $color-bg-light: #404040;
   }
 }
 .v-input {
-  color: $color-text-base !important;
-  input,
-  textarea {
+  * {
     color: $color-text-base !important;
   }
 }
@@ -58,4 +58,13 @@ $color-bg-light: #404040;
 }
 .v-navigation-drawer {
   background-color: $color-bg-light !important;
+}
+
+// Application css
+.site-title {
+  color: #f0f0f0;
+  text-shadow:  2px  2px 10px $color-text-accent,
+               -2px  2px 10px $color-text-accent,
+                2px -2px 10px $color-text-accent,
+               -2px -2px 10px $color-text-accent;
 }

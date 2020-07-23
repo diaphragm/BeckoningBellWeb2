@@ -9,12 +9,17 @@ export default {
   ** Headers of the page
   */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.npm_package_name || '',
+    title: config[NODE_ENV].site.title || '',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
+      { hid: 'description', name: 'description', content: config[NODE_ENV].site.description || '' },
+      { hid: 'og:site_name', property: 'og:site_name', content: config[NODE_ENV].site.title },
+      { hid: 'og:type', property: 'og:type', content: 'website' },
+      { hid: 'og:url', property: 'og:url', content: config[NODE_ENV].site.baseUrl },
+      { hid: 'og:title', property: 'og:title', content: config[NODE_ENV].site.title },
+      { hid: 'og:description', property: 'og:description', content: config[NODE_ENV].site.description },
+      { hid: 'og:image', property: 'og:image', content: `${config[NODE_ENV].site.baseUrl}/ogp/g_lamp.jpg` }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -24,7 +29,7 @@ export default {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#fff' },
+  loading: { color: '#d4b505' },
   /*
   ** Global CSS
   */
@@ -82,13 +87,11 @@ export default {
         dark: {
           primary: '#d4b505',
           accent: '#b9966e',
-          // primary: colors.blue.darken2,
-          // accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
+          info: '#b9966e',
+          warning: colors.deepPurple.darken4,
           error: colors.deepOrange.darken4,
-          success: colors.green.darken1
+          success: '#d4b505'
         }
       }
     }

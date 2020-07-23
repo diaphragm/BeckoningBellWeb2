@@ -5,20 +5,23 @@
         <v-spacer />
         <notification-toggle-button />
       </v-toolbar>
-      <div class="text-center">
-        <h1>狩人呼びの鐘Web</h1>
-        <h2>The Old Hunters</h2>
-      </div>
 
       <v-row>
+        <v-col class="text-center site-title">
+          <h1>狩人呼びの鐘Web</h1>
+          <h2>The Old Hunters</h2>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col cols=12 sm=8>
-          <v-card class="ma-2">
+          <v-card class="main-card ma-2 pa-4">
             <v-card-text>
-              <p>Bloodborneの協力プレイ募集サイトです。</p>
-              <p>Twitterでの募集機能、定型文やスタンプが使えるチャット機能があります。</p>
+              Bloodborneの協力プレイ募集サイトです。<br>
+              <a href="https://twitter.com/BloodborneVoyyy">Twitter</a>での募集機能、定型文やスタンプが使えるチャット機能、募集とチャットの通知機能があります。
             </v-card-text>
 
-            <v-divider />
+            <!-- <v-divider /> -->
+            <ornament-separator />
 
             <v-card-title>
               鐘を鳴らす
@@ -32,8 +35,8 @@
               </v-btn>
             </v-card-actions>
 
-            <!-- <ornament-separator /> -->
-            <v-divider />
+            <ornament-separator class="mt-6" />
+            <!-- <v-divider /> -->
             <v-card-title>
               現在募集中の鐘
             </v-card-title>

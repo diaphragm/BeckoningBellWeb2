@@ -25,7 +25,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-            <v-btn outlined nuxt to='/' text>TOPへ戻る</v-btn>
+            <v-btn color="primary" nuxt to='/' text>TOPへ戻る</v-btn>
           <v-spacer />
         </v-card-actions>
       </v-card>

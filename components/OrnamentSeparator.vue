@@ -9,6 +9,7 @@ export default {
 
 <style scoped>
   .ornament-separator {
+    padding: 0 24px;
     width: 100%;
     filter: invert(50%);
   }

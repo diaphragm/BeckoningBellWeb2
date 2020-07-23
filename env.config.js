@@ -15,7 +15,11 @@ export default  {
       id: 'ca-pub-8284783845808742',
       pageLevelAds: true,
     },
-    baseUrl: 'https://beckoningbellweb-staging.web.app/'
+    site: {
+      baseUrl: 'https://beckoningbellweb-staging.web.app/',
+      title: '狩人呼びの鐘Web The Old Hunters',
+      description: 'Bloodborneの協力プレイ募集サイト',
+    }
   },
   production: {
   }
