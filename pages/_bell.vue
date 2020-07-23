@@ -23,7 +23,6 @@
           知らぬ者よ<br>
           かねて血を恐れたまえ
         </v-card-text>
-        <adsbygoogle ad-slot="1588491605" :ad-style="{width: 280}" ad-format="" />
         <v-card-actions>
           <v-spacer />
             <v-btn outlined nuxt to='/' text>TOPへ戻る</v-btn>
