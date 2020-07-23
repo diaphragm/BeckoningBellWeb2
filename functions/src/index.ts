@@ -331,7 +331,7 @@ export const scheduledFunction = functions
 
 // request
 export const bellrequest = functions
-  .region(REGION)
+  .region('us-central1') // firebase hostingから呼ぶ場合は us-central1 限定
   .https.onRequest(async (req, res) => {
     const bellId = req.path.split('/')[1]
     const bell = await admin.firestore().collection('bells').doc(bellId).get()
@@ -428,14 +428,6 @@ const getOgpImage = (bell: FirebaseFirestore.DocumentSnapshot): string => {
 }
 
 // debug
-
-export const printenv = functions
-  .region(REGION)
-  .https.onRequest((req, res) => {
-    console.log('functions.config()', functions.config())
-    console.log('process.env', process.env)
-    res.send("Please check firebase dashboard.")
-  })
 
 export const maintenance = functions
   .region(REGION)
