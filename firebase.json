@@ -25,7 +25,7 @@
       },
       {
         "source": "/*",
-        "function": "bell"
+        "function": "bellrequest"
       },
       {
         "source": "**",

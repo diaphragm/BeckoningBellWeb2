@@ -37,7 +37,7 @@ const genTweetUrl = (tweet: Twitter.ResponseData): string => {
 }
 
 const truncateTweetText = (text: string, suffix: string = '', truncationSymbol: string = '…'): string => {
-  if (suffix != '' && !parseTweet(suffix).valid) throw new Error(`Suffix Length is too long.`)
+  if (suffix !== '' && !parseTweet(suffix).valid) throw new Error(`Suffix Length is too long.`)
 
   const raw = text + suffix
   if (parseTweet(raw).valid) {
@@ -330,7 +330,7 @@ export const scheduledFunction = functions
   })
 
 // request
-export const bell = functions
+export const bellrequest = functions
   .region(REGION)
   .https.onRequest(async (req, res) => {
     const bellId = req.path.split('/')[1]
