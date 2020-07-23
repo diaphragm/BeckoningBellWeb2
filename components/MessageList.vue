@@ -14,12 +14,11 @@
 <script>
 import TimeAgo from '~/components/TimeAgo.vue'
 import Message from '~/components/Message.vue'
-import SystemMessage from '~/components/SystemMessage.vue'
 
 export default {
   props: ['messages', 'hunters', 'bell'],
   components: {
-    TimeAgo, Message, SystemMessage
+    TimeAgo, Message
   },
   data() {
     return {
