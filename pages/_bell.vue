@@ -73,6 +73,10 @@ export default {
   },
 
   created() {
+    if (this.$route.path.endsWith('/')) {
+      window.history.replaceState(null, null, `/${this.$route.params.bell}`)
+    }
+
     const bell = this.$fireStore.collection('bells').doc(this.$route.params.bell)
     this.bellObj = bell
     bell.get().then((doc) => {

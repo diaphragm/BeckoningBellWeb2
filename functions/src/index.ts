@@ -21,6 +21,8 @@ const ENV_CONFIG: {[key: string]: any} = config[ENV]
 
 const REGION = ENV_CONFIG['region']
 const BASE_URL = ENV_CONFIG['baseUrl']
+const SITE_NAME = ENV_CONFIG['siteName']
+const TWITTER_USER_NAME = ENV_CONFIG['twitterUserName']
 const RETWEET_INTERVAL: number = ENV_CONFIG['retweetInterval']
 const EXPIRE_TIME: number = ENV_CONFIG['bellBexpirationTime']
 const BELL_ATTR_LIST = ['place', 'password', 'note', 'region', 'silencedAt']
@@ -327,6 +329,103 @@ export const scheduledFunction = functions
     return 0
   })
 
+// request
+export const bell = functions
+  .region(REGION)
+  .https.onRequest(async (req, res) => {
+    const bellId = req.path.split('/')[1]
+    const bell = await admin.firestore().collection('bells').doc(bellId).get()
+    res.send(buildOgpHtml(bell))
+  })
+
+const buildOgpHtml = (bell: FirebaseFirestore.DocumentSnapshot): string => {
+  if (!bell.exists) {
+    return `<script>window.location="/${bell.id}/" </script>`
+  }
+
+  const bellId = bell.id
+  const { place, note, silencedAt } = bell.data() || {}
+  const title = silencedAt ? '募集は終了しました' : `${place}で鐘で鐘が鳴っています`
+  const desctiption = silencedAt ? '募集は終了しました' : `${note}`
+  const url = `${BASE_URL}/${bellId}`
+  const imageUrl = `${BASE_URL}/ogp/${getOgpImage(bell)}`
+  const redirectTo = `/${bellId}/`
+
+  const html = `
+    <!DOCTYPE html>
+    <head prefix="og: http://ogp.me/ns#">
+    <title>${SITE_NAME}</title>
+    <meta property="og:title" content="${title}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="${url}" />
+    <meta property="og:image" content="${imageUrl}" />
+    <meta property="og:site_name" content="${SITE_NAME}" />
+    <meta property="og:description" content="${desctiption}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="${TWITTER_USER_NAME}" />
+    <meta name="twitter:creator" content="${TWITTER_USER_NAME}" />
+    </head>
+    <body><script>window.location="${redirectTo}"</script></body>
+    </html>
+  `
+  return html
+}
+
+const OGP_IMAGE_LIST: {[place:string]: string[] | undefined} = {
+  "嘆きの祭壇": ["altar_of_despair_1.jpg"],
+  "「アメンドーズ」霧前": ["amygdara_1.jpg"],
+  "時計塔": ["astral_clocktower_1.jpg"],
+  "「血に渇いた獣」霧前": ["blood_starved_beast_1.jpg", "blood_starved_beast_2.jpg"],
+  "ビルゲンワース": ["byrgenwerth_1.jpg"],
+  "ヤーナム聖堂街": ["cathedral_ward_1.jpg"],
+  "「星界からの使者」霧前": ["celestial_emissary_1.jpg"],
+  "ヤーナム市街": ["central_yharnam_1.jpg"],
+  "「聖職者の獣」霧前": ["cleric_beast_1.jpg", "cleric_beast_2.jpg", "cleric_beast_3.jpg"],
+  "「星の娘、エーブリエタース」霧前": ["ebrietas_1.jpg", "ebrietas_2.jpg"],
+  "「ガスコイン神父」霧前": ["father_gascoigne_1.jpg"],
+  "漁村": ["fishing_hamlet_1.jpg"],
+  "禁域の森": ["forbidden_woods_1.jpg"],
+  "廃城カインハースト": ["forsaken_castle_cainhurst_1.jpg"],
+  "ヘムウィックの墓地街": ["hemwick_charnel_lane_1.jpg"],
+  "狩人の悪夢": ["hunters_nightmare_1.jpg"],
+  "「時計塔のマリア」霧前": ["lady_maria_1.jpg"],
+  "「初代教区長ローレンス」霧前": ["laurence_1.jpg", "laurence_2.jpg"],
+  "灯台脇の小屋": ["lighthouse_hut_1.jpg"],
+  "「失敗作たち」霧前": ["living_failures_1.jpg", "living_failures_2.jpg"],
+  "「醜い獣、ルドウイーク」霧前": ["ludwig_1.jpg", "ludwig_2.jpg"],
+  "「殉教者ローゲリウス」霧前": ["martyr_logarius_1.jpg", "martyr_logarius_2.jpg"],
+  "メルゴーの高楼中腹": ["mergos_loft_middle_1.jpg"],
+  "「悪夢の主、ミコラーシュ」霧前": ["micolash_1.jpg", "micolash_2.jpg", "micolash_3.jpg"],
+  "悪夢の辺境": ["nightmare_frontier_1.jpg"],
+  "メンシスの悪夢": ["nightmare_of_mensis_1.jpg"],
+  "ヤーナム旧市街": ["old_yharnam_1.jpg"],
+  "「再誕者」霧前": ["one_reborn_1.jpg"],
+  "「ゴースの遺子」霧前": ["orphan_of_kos_1.jpg", "orphan_of_kos_2.jpg"],
+  "実験棟": ["research_hall_1.jpg"],
+  "「白痴の蜘蛛、ロマ」霧前": ["rom_1.jpg", "rom_2.jpg"],
+  "「ヤーナムの影」霧前": ["shadow_of_yharnam.jpg"],
+  "聖堂街 上層": ["upper_cathedral_ward_1.jpg"],
+  "「教区長エミーリア」霧前": ["vicar_amelia_1.jpg", "vicar_amelia_2.jpg"],
+  "血の女王の間": ["vileblood_queens_chamber_1.jpg"],
+  "「メルゴーの乳母」霧前": ["wergos_wet_nurse_1.jpg"],
+  "「ヘムウィックの魔女」霧前": ["witch_of_hemwick_1.jpg"],
+  "ヤハグル教会": ["yahargul_chapel_1.jpg"],
+  "隠し街ヤハグル": ["yahargul_unseen_village_1.jpg"],
+  "lamp": ["g_lamp.jpg"],
+  "lamp_u": ["g_lamp_2.jpg"],
+  "redmoon": ["g_redmoon.jpg"],
+}
+
+const getOgpImage = (bell: FirebaseFirestore.DocumentSnapshot): string => {
+  const { place, createdAt, silencedAt } = bell.data() || {}
+  const key: string = silencedAt ? 'lamp_u' : place
+  let ret = OGP_IMAGE_LIST[key]
+  if (!ret) {
+    ret = OGP_IMAGE_LIST['lamp'] || []
+  }
+  const i = createdAt.seconds % ret.length
+  return ret[i]
+}
 
 // debug
 

@@ -13,6 +13,7 @@ export default  {
     },
     googleAdsense: {
       id: 'ca-pub-8284783845808742',
+      pageLevelAds: true,
     },
     baseUrl: 'https://beckoningbellweb-staging.web.app/'
   },

@@ -20,6 +20,14 @@
     ],
     "rewrites": [
       {
+        "source": "/*/**",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/*",
+        "function": "bell"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
