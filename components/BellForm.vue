@@ -6,7 +6,7 @@
       hint="合言葉を設定しないと、レベル差がある他のプレイヤーとのマルチプレイができません。" class="py-4" />
     <v-textarea v-model="form.note" label="備考" persistent-hint :rules="[charCount(300)]"
       hint="周回数、レベル、プレイ方針、契約カレル、聖杯ダンジョンの内容などを書くと親切かもしれません。" class="py-4"/>
-    <v-radio-group v-model="form.region" label="マッチング地域" :row="$vuetify.breakpoint.smAndUp" mandatory>
+    <v-radio-group v-model="form.region" label="マッチング地域" :row="$vuetify.breakpoint.mdAndUp" mandatory>
       <v-radio label="ローカル" value="ローカル" />
       <v-radio label="ワールドワイド" value="ワールドワイド" />
     </v-radio-group>

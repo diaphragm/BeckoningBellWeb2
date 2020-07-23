@@ -18,8 +18,6 @@
               <p>Twitterでの募集機能、定型文やスタンプが使えるチャット機能があります。</p>
             </v-card-text>
 
-            <!-- <ornament-separator /> -->
-            <adsbygoogle ad-slot="1588491605" ad-format="horiozntal" />
             <v-divider />
 
             <v-card-title>
@@ -36,8 +34,6 @@
 
             <!-- <ornament-separator /> -->
             <v-divider />
-            <adsbygoogle ad-slot="1588491605" ad-format="horiozntal" />
-
             <v-card-title>
               現在募集中の鐘
             </v-card-title>
@@ -54,7 +50,6 @@
 
         <v-col>
           <twitter-timeline ad-slot="4883796830" />
-          <adsbygoogle />
         </v-col>
       </v-row>
     </v-container>
