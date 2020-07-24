@@ -26,13 +26,13 @@ jobs:
     - if: github.ref == 'refs/heads/master'
       name: deploy staging
       run: |
-        NODE_ENV=staging nuxt build
+        NODE_ENV=staging yarn nuxt build
         firebase use staging
         firebase deploy --token "$FIREBASE_TOKEN"
 
     - if: github.ref == 'refs/heads/release'
       name: deploy production
       run: |
-        NODE_ENV=production nuxt build
+        NODE_ENV=production yarn nuxt build
         firebase use production
         firebase deploy --token "$FIREBASE_TOKEN"
