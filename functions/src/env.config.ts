@@ -7,7 +7,7 @@ export const config: {[env: string]: object} = {
     retweetInterval: 1 * 60, // seconds
     bellBexpirationTime: 1 * 60 // seconds
   },
-  producntion: {
+  production: {
     region: 'asia-northeast1',
     baseUrl: 'https://bloodborne.9kv.org',
     siteName: '狩人呼びの鐘Web The Old Hunters',
