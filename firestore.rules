@@ -10,8 +10,31 @@ service cloud.firestore {
     //
     // Make sure to write security rules for your app before that time, or else
     // your app will lose access to your Firestore database
-    match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2020, 7, 31);
+    // match /{document=**} {
+    //   allow read, write: if request.time < timestamp.date(2020, 7, 31);
+    // }
+    match /bells/{bellId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if request.auth != null && resource.data.beckoner == request.auth.uid;
+
+      function beckoner() {
+        return get(/databases/$(database)/documents/bells/$(bellId)).data.beckoner
+      }
+
+      match /messages/{messageId} {
+        allow read, create: if true;
+      }
+      match /hunters/{hunterId} {
+        allow read, create: if true;
+        allow update: if request.auth != null && beckoner() == request.auth.uid;
+      }
+    }
+
+    match /hunters/{hunterId} {
+      allow create: if true;
+      allow update: if request.auth != null && hunterId == request.auth.uid;
+      allow read: if request.auth != null && hunterId == request.auth.uid;
     }
   }
 }
