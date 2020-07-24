@@ -20,6 +20,11 @@ jobs:
     - name: install dependencies
       run: yarn --frozen-lockfile
 
+    - name: install functions dependencies
+      run: |
+        cd ./functions
+        npm install
+
     - name: install firebase
       run: npm install -g firebase-tools
 
