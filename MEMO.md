@@ -50,7 +50,7 @@
   - headerでlinkで読み込んだら何故か解決した
 - [ ] Vue Composition API使う
   - [ ] Vue 3にする
-
+- [ ] ruleの整備
 
 ## 設定
 
