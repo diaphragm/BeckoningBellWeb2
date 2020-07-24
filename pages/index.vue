@@ -55,6 +55,16 @@
           <twitter-timeline ad-slot="4883796830" />
         </v-col>
       </v-row>
+      <v-row>
+        <v-col class="text-right">
+          <span class="copyright">
+            © 2020 diaphragm
+            <a href="https://github.com/diaphragm" target="_blank" rel="noopener noreferrer">
+              <v-img src="/img/GitHub-Mark-32px.png" height="1em" width="1em" />
+            </a>
+          </span>
+        </v-col>
+      </v-row>
     </v-container>
   </v-content>
 </template>
@@ -109,3 +119,14 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.copyright {
+  color: #808080;
+  font-size: x-small;
+  .v-image {
+    display: inline-block;
+    filter: invert(50%);
+  }
+}
+</style>
