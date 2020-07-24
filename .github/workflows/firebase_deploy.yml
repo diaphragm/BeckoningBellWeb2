@@ -1,0 +1,26 @@
+name: Firebase Deploy
+
+on:
+  push:
+    branches:
+      - master
+      - release
+  pull_request:
+    branches:
+      - master
+      - release
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+    - run: yarn --frozen-lockfile
+    - run: npm install -g firebase-tools
+    - name: deploy staging
+      if: github.ref == 'refs/heads/master'
+      run: yarn deploy
+    - name: deploy production
+      if: github.ref == 'refs/heads/release'
+      run: yarn deploy:production
