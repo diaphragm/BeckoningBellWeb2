@@ -19,7 +19,6 @@ export default {
         this.$silenceBell(this.bell.id).then(() => {
           this.$toast.success('募集を終了しました。')
         }).catch((error) => {
-          console.log(error)
           this.$toast.error('エラーが発生しました。')
         })
       })

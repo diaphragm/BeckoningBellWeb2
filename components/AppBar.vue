@@ -110,7 +110,6 @@ export default {
       this.hide = window.innerHeight < this.$nuxt.$el.scrollHeight - 48
     },
     toggleBeast(hunter) {
-      console.log(hunter)
       const message = hunter.isBeast ?
         `「${hunter.name}」のメッセージを表示しますか？` :
         `「${hunter.name}」のメッセージを非表示にしますか？

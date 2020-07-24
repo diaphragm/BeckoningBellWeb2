@@ -16,8 +16,6 @@ export default {
   },
 
   async beforeCreate() {
-    console.log('[dev]', this)
-
     // pluginだと$fireAuthがundefinedなのでLayoutで設定
     this.__proto__.__proto__.$uid = null
     await this.$fireAuth.onAuthStateChanged((user) => {

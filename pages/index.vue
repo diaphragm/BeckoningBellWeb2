@@ -103,7 +103,6 @@ export default {
         const data = this.form
         data.note = data.note || null
         this.$ringBell(data).then((res) => {
-          console.log(res, res.id)
           this.$toast.success('チャット画面に移動します。')
           this.$router.push({path: `/${res.id}`})
         }).catch((res) => {
@@ -112,11 +111,6 @@ export default {
       }
     },
   },
-  watch: {
-    bells(val) {
-      console.log(val)
-    }
-  }
 }
 </script>
 

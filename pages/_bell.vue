@@ -161,10 +161,10 @@ export default {
       return caryll
     },
 
-    dev() {
-      console.log('dev')
-      console.log(this)
-    }
+    // dev() {
+    //   console.log('dev')
+    //   console.log(this)
+    // }
   },
 
   watch: {

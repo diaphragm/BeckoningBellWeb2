@@ -13,7 +13,6 @@ export default {
   },
   methods: {
     toast(message, color='info') {
-      console.log(message)
       this.snackbar.message = message
       this.snackbar.color = color
       this.snackbar.open = true

@@ -12,7 +12,6 @@ export default {
     }
   },
   created() {
-    console.log({fireMess: this.$fireMess})
     this.$fireMess.onTokenRefresh(() => {
       this.getFcmToken
     })
@@ -22,7 +21,6 @@ export default {
   methods: {
     getFcmToken() {
       this.$fireMess.getToken().then(token => {
-        console.log(token)
         this.token = token
       })
     }

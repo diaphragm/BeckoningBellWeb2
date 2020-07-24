@@ -77,7 +77,6 @@ export default {
         }).then(() => {
           this.$toast.success('鐘の情報を更新しました。')
         }).catch((error) => {
-          console.log(error)
           this.$toast.error('エラーが発生しました。')
         })
       }
@@ -119,7 +118,6 @@ export default {
         this.$silenceBell(this.bell.id).then(() => {
           this.$toast.success('募集を終了しました。')
         }).catch((error) => {
-          console.log(error)
           this.$toast.error('エラーが発生しました。')
         })
       })
@@ -128,7 +126,6 @@ export default {
   watch: {
     bell: {
       handler(bell) {
-        console.log('bell info changed', bell)
         // update直後はサーバー時刻がnullになるっぽい
         if (bell.updatedAt === null) { return }
 

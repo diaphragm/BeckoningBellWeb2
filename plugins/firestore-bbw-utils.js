@@ -6,7 +6,6 @@ const FirestoreBbwUtils = {
 
     const compactObj = (obj) => {
       Object.entries(obj).forEach(([key, value]) => {
-        console.log(key)
         if (value === void 0) { delete obj[key] }
       })
     }
@@ -24,7 +23,6 @@ const FirestoreBbwUtils = {
     Vue.prototype.$bellAttrList = BellAttrList
 
     Vue.prototype.$ringBell = function(bell) {
-      console.log('ring bell', bell)
       const data = compactBell(bell)
       data.beckoner = this.$uid
       data.createdAt = this.$fireStoreObj.FieldValue.serverTimestamp()
@@ -35,26 +33,19 @@ const FirestoreBbwUtils = {
     }
 
     Vue.prototype.$reRingBell = function(id, bell) {
-      console.log('re-ring bell', {id, bell})
       const data = compactBell(bell)
       data.updatedAt = this.$fireStoreObj.FieldValue.serverTimestamp()
 
       return this.$fireStore.collection('bells').doc(id).update(data)
     }
 
-    // Vue.prototype.$blankShot = function(id) {
-    //   console.log('blank shot', {id})
-    //   return this.$fireStore.collection('bells').doc(id).delete()
-    // }
     Vue.prototype.$silenceBell = function (id) {
-      console.log('silence bell', {id})
       return this.$fireStore.collection('bells').doc(id).update({
         silencedAt: this.$fireStoreObj.FieldValue.serverTimestamp()
       })
     }
 
     Vue.prototype.$sendMessage = function(bellId, hunterId, message) {
-      console.log('send message', {bellId, hunterId, message})
       return this.$fireStore.collection('bells').doc(bellId).collection('messages').add({
         hunter: hunterId,
         body: message.body,
@@ -67,7 +58,6 @@ const FirestoreBbwUtils = {
 
     Vue.prototype.$fcmSyncToken = async function () {
       return this.$fireMess.getToken().then(async (token) => {
-        console.log(token, this.$uid)
 
         Vue.prototype.$fcmToken = token
         const ref = this.$fireStore.collection('hunters').doc(this.$uid)
@@ -103,8 +93,6 @@ const FirestoreBbwUtils = {
     }
 
     Vue.prototype.$fcmUnSubscribeBell = async function (bellId) {
-      console.log(this.$fcmToken)
-
       return this._getTokenPromise().then(() => {
         this.$fireStore.collection('hunters').doc(this.$uid).update({
           subscriptions: this.$fireStoreObj.FieldValue.arrayRemove(bellId),

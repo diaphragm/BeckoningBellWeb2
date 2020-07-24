@@ -69,7 +69,6 @@ export default {
       }[group]
     },
     click(body, type) {
-      console.log(this.$vuetify.breakpoint.name)
       this.selected = 30
       this.$emit('click', {type, body})
     }
