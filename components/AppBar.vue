@@ -58,6 +58,11 @@
             <v-list-item-title>{{ hunter.name }}</v-list-item-title>
             <v-list-item-subtitle v-if="hunter.id == $uid">あなた</v-list-item-subtitle>
           </v-list-item-content>
+          <v-list-item-action v-if="$uid && bell.beckoner == $uid && hunter.id != $uid">
+            <v-btn icon @click="toggleBeast(hunter)"><v-icon color="grey">
+              {{ hunter.isBeast ? 'mdi-account-cancel' : 'mdi-account' }}
+            </v-icon></v-btn>
+          </v-list-item-action>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -103,10 +108,38 @@ export default {
     },
     resized(e) {
       this.hide = window.innerHeight < this.$nuxt.$el.scrollHeight - 48
+    },
+    toggleBeast(hunter) {
+      console.log(hunter)
+      const message = hunter.isBeast ?
+        `「${hunter.name}」のメッセージを表示しますか？` :
+        `「${hunter.name}」のメッセージを非表示にしますか？
+        <div class="pa-1">
+        - 他の狩人の画面にも表示されなくなります。<br>
+        - 「${hunter.name}」には秘匿されます。
+        </div>
+        <div class="beast pt-6">
+          どこもかしこも、獣ばかりだ…
+        </div>
+        `
+      this.$confirm(message).then((res) => {
+        if (res) {
+          const ref = this.$fireStore.collection('bells').doc(this.bell.id).collection('hunters').doc(hunter.id)
+          ref.update({
+            isBeast: !hunter.isBeast
+          })
+        }
+      })
     }
   },
 }
 </script>
 
-<style scoped>
+<style>
+.beast {
+  color: #b2b2b2;
+  font-size: small;
+  font-style: italic;
+  text-align: center;
+}
 </style>

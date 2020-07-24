@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row v-for="message in messages" :key="message.id" :justify="justify(message)">
-      <v-col xl=7 lg=7 md=8 sm=9 cols=10 >
+      <v-col xl=7 lg=7 md=8 sm=9 cols=10 v-if="showMessage(message)">
         <message :message="message" :hunters="hunters" :bell="bell" />
         <div class="text-right caption">
           <time-ago :time="message.createdAt" />
@@ -43,12 +43,14 @@ export default {
       }
     },
 
+    showMessage(message) {
+      if (message.hunter === this.$uid) {
+        return true
+      } else {
+        const hunter = this.hunters.find(h => h.id == message.hunter) || {isBeast: null}
+        return !hunter.isBeast
+      }
+    },
   }
 }
 </script>
-
-<style scoped>
-  .hunter-icon .v-image__image {
-    filter: brightness(0) invert(0);
-  }
-</style>
