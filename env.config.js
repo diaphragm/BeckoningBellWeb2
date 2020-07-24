@@ -16,11 +16,31 @@ export default  {
       pageLevelAds: true,
     },
     site: {
-      baseUrl: 'https://beckoningbellweb-staging.web.app/',
+      baseUrl: 'https://staging-bloodborne.9kv.org',
       title: '狩人呼びの鐘Web The Old Hunters',
       description: 'Bloodborneの協力プレイ募集サイト',
     }
   },
   production: {
+    firebase: {
+      apiKey: "AIzaSyBIOaK8FPCf1-bDNFu8-zExVp2X9pZVDUQ",
+      authDomain: "beckoningbellweb.firebaseapp.com",
+      databaseURL: "https://beckoningbellweb.firebaseio.com",
+      projectId: "beckoningbellweb",
+      storageBucket: "beckoningbellweb.appspot.com",
+      messagingSenderId: "1000148003305",
+      appId: "1:1000148003305:web:72a0a133cc8e53b20e8378",
+      measurementId: "G-XPYYWQY8RY",
+      fcmPublicVapidKey: 'BCOTXma3-z5cx9agTyjkG_EUg3VpDtJpEFjPP_NaY7Z_5U0Q_exmukrLRP5GdvdtSHPp37yWs1V3VxIy6WpFaLY',
+    },
+    googleAdsense: {
+      id: 'ca-pub-8284783845808742',
+      pageLevelAds: true,
+    },
+    site: {
+      baseUrl: 'https://bloodborne.9kv.org',
+      title: '狩人呼びの鐘Web The Old Hunters',
+      description: 'Bloodborneの協力プレイ募集サイト',
+    }
   }
 }
