@@ -411,6 +411,8 @@ const OGP_IMAGE_LIST: {[place:string]: string[] | undefined} = {
   "「ヘムウィックの魔女」霧前": ["witch_of_hemwick_1.jpg"],
   "ヤハグル教会": ["yahargul_chapel_1.jpg"],
   "隠し街ヤハグル": ["yahargul_unseen_village_1.jpg"],
+  "聖杯(固定ダンジョン)": ["altar_1.jpg", "altar_2.jpg", "chalice_dungeon_7.jpg"],
+  "汎聖杯": ["chalice_dungeon_1.jpg", "chalice_dungeon_2.jpg", "chalice_dungeon_3.jpg", "chalice_dungeon_4.jpg", "chalice_dungeon_5.jpg", "chalice_dungeon_6.jpg",],
   "lamp": ["g_lamp.jpg"],
   "lamp_u": ["g_lamp_2.jpg"],
   "redmoon": ["g_redmoon.jpg"],

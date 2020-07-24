@@ -37,7 +37,7 @@
   - [x] 募集終了したらimageとdescriptionを終了に差し替え
     - [ ] 反映時間を調査
 - [x] 環境ごとの設定をまとめる
-- [ ] CI/CD
+- [x] CI/CD
 - [ ] bundleされたjsが2.4MBとかあるので調査
 - [x] 文字数制限などバリデーターちゃんとする
 - [x] BAN機能
@@ -50,7 +50,7 @@
   - headerでlinkで読み込んだら何故か解決した
 - [ ] Vue Composition API使う
   - [ ] Vue 3にする
-- [ ] ruleの整備
+- [x] ruleの整備
 
 ## 設定
 
