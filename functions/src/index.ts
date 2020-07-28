@@ -268,8 +268,10 @@ export const onUpdatedBellTrigger = functions
       if (diff.silencedAt) {
         admin.firestore().collection('hunters').where('subscriptions', 'array-contains', bellId)
         .get().then(snap => {
-          const tokens = snap.docs.map(doc => doc.data().token)
-          unsubscribeTopic(tokens, bellId)
+          if (!snap.empty) {
+            const tokens = snap.docs.map(doc => doc.data().token)
+            unsubscribeTopic(tokens, bellId)
+          }
         }).catch(error => {
           console.error(error)
         })
