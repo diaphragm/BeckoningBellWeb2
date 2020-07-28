@@ -221,8 +221,9 @@ export const onCreatedBellTritter = functions
     TwitterClient.post('statuses/update', {
       status: truncateTweetText(message),
     }).then(tweet => {
+      console.info(tweet)
       const tweetUrl = genTweetUrl(tweet)
-      return admin.firestore().collection('bells').doc(snap.id).update({
+      return snap.ref.update({
         tweetUrl: tweetUrl
       })
     }).catch(error => {
@@ -258,7 +259,7 @@ export const onUpdatedBellTrigger = functions
         const tweetId = tweetUrl ? tweetUrl.match(/\d+$/)[0] : ''
 
         TwitterClient.post('statuses/update', {
-          status: truncateTweetText(message, ' ' + tweetUrl),
+          status: truncateTweetText(message, ' ' + (tweetUrl || '')),
           in_reply_to_status_id: tweetId
         }).catch(error => {
           console.error(error)
@@ -268,8 +269,10 @@ export const onUpdatedBellTrigger = functions
       if (diff.silencedAt) {
         admin.firestore().collection('hunters').where('subscriptions', 'array-contains', bellId)
         .get().then(snap => {
-          const tokens = snap.docs.map(doc => doc.data().token)
-          unsubscribeTopic(tokens, bellId)
+          if (!snap.empty) {
+            const tokens = snap.docs.map(doc => doc.data().token)
+            unsubscribeTopic(tokens, bellId)
+          }
         }).catch(error => {
           console.error(error)
         })
