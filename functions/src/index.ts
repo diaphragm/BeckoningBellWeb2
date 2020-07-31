@@ -216,7 +216,7 @@ export const onCreatedBellTritter = functions
     const id = snap.id
     const {place, note} = snap.data() || {}
     const url = `${BASE_URL}/${id}`
-    const message = `${place}で鐘を鳴らしています。\n${url}\n${note}`
+    const message = `${place}で鐘を鳴らしています。\n${url}\n${note || ''}`
 
     TwitterClient.post('statuses/update', {
       status: truncateTweetText(message),
@@ -255,7 +255,7 @@ export const onUpdatedBellTrigger = functions
         const url = `${BASE_URL}/${bellId}`
         const message = diff.silencedAt ?
           `【終了】 募集は終了しました` :
-          `【更新】 ${place}で鐘を鳴らしています。 ${url}\n${note}`
+          `【更新】 ${place}で鐘を鳴らしています。 ${url}\n${note || ''}`
         const tweetId = tweetUrl ? tweetUrl.match(/\d+$/)[0] : ''
 
         TwitterClient.post('statuses/update', {
@@ -349,7 +349,7 @@ const buildOgpHtml = (bell: FirebaseFirestore.DocumentSnapshot): string => {
   const bellId = bell.id
   const { place, note, silencedAt } = bell.data() || {}
   const title = silencedAt ? '募集は終了しました' : `${place}で鐘で鐘が鳴っています`
-  const desctiption = silencedAt ? '募集は終了しました' : `${note}`
+  const desctiption = silencedAt ? '募集は終了しました' : `${note || ''}`
   const url = `${BASE_URL}/${bellId}`
   const imageUrl = `${BASE_URL}/ogp/${getOgpImage(bell)}`
   const redirectTo = `/${bellId}/`
