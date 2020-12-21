@@ -348,7 +348,7 @@ const buildOgpHtml = (bell: FirebaseFirestore.DocumentSnapshot): string => {
 
   const bellId = bell.id
   const { place, note, silencedAt } = bell.data() || {}
-  const title = silencedAt ? '募集は終了しました' : `${place}で鐘で鐘が鳴っています`
+  const title = silencedAt ? '募集は終了しました' : `${place}で鐘が鳴っています`
   const desctiption = silencedAt ? '募集は終了しました' : `${note || ''}`
   const url = `${BASE_URL}/${bellId}`
   const imageUrl = `${BASE_URL}/ogp/${getOgpImage(bell)}`
